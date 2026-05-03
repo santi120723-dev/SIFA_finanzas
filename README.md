@@ -1,89 +1,105 @@
-# SIFA_finanzas – Proyecto de análisis financiero (Python + Pandas)
+# SIFA_finanzas – Análisis de Datos Financieros (Python + Pandas)
 
 ---
 
-## Estado del proyecto
+## Descripción
 
-Este proyecto corresponde a una primera versión (v1) de un análisis exploratorio de datos financieros.
+Proyecto de análisis de datos financieros enfocado en la limpieza, transformación y exploración de información contable para su uso en procesos de análisis y Business Intelligence.
 
-Actualmente el proyecto se encuentra en fase de desarrollo.
-
-### Implementado hasta ahora:
-- Carga de datos desde archivo Excel  
-- Exploración del dataset  
-- Proceso de limpieza de datos en Pandas  
-- Estructuración básica del entorno de análisis  
-
-### En progreso:
-- Limpieza y transformación de datos más profunda  
-- Estandarización de variables contables  
-- Organización del pipeline de análisis  
-
-### Próximas etapas (planificadas):
-- Cálculo de KPIs financieros en Python  
-- Análisis exploratorio completo (EDA)  
-- Consultas SQL básicas  
-- Creación de dashboard en Power BI  
+Actualmente se desarrolla una primera versión (v1) orientada a la construcción de un pipeline de datos reproducible.
 
 ---
 
-## Contexto del proyecto
+## Resultado actual
 
-Este proyecto surge como un ejercicio práctico de análisis de datos financieros a partir de archivos Excel con información contable.
+Hasta el momento, el proyecto permite:
 
-El objetivo es avanzar progresivamente hacia la construcción de un flujo estructurado de análisis de datos aplicado a finanzas.
+- Cargar datos financieros desde archivos Excel  
+- Explorar la estructura del dataset  
+- Identificar problemas de calidad de datos  
+- Realizar procesos iniciales de limpieza en Python (Pandas)  
+- Preparar un dataset base para análisis posteriores  
+
+---
+
+## Aprendizajes clave
+
+Durante esta primera fase se identificó que los datos financieros presentan problemas de calidad que impactan directamente el análisis, entre ellos:
+
+- Valores nulos en columnas relevantes  
+- Inconsistencias en nombres de cuentas  
+- Formatos no estandarizados  
+
+Esto evidencia la importancia de la limpieza y transformación de datos como etapa fundamental antes de calcular KPIs o construir visualizaciones.
 
 ---
 
 ## Objetivo del proyecto
 
-Construir paso a paso un flujo de trabajo que permita:
+Desarrollar un flujo de trabajo que permita:
 
-- Entender y explorar datos financieros en bruto  
-- Limpiar y estructurar información contable  
-- Preparar la base para análisis más avanzados (KPIs, SQL, BI)  
+- Transformar datos financieros en información estructurada  
+- Preparar datasets listos para análisis  
+- Construir la base para KPIs financieros y dashboards  
+- Simular un entorno real de análisis de datos aplicado a finanzas  
 
 ---
 
 ## Enfoque del análisis
 
-El trabajo se desarrolla de forma progresiva:
+El proyecto sigue un flujo estructurado de datos:
 
-**1. Datos en Excel**  
-
-**2. Carga en Python (Pandas)**  
-
-**3. Exploración del dataset**  
-
-**4. Limpieza de datos**  
-
-**5. Preparación para análisis futuros**
+1. Ingesta de datos (Excel)  
+2. Carga en Python (Pandas)  
+3. Exploración del dataset  
+4. Limpieza y estandarización  
+5. Preparación para análisis y visualización  
 
 ---
 
 ## Trabajo técnico realizado
 
 ### 1. Carga de datos
-- Lectura de archivo Excel con Pandas  
-- Visualización inicial del dataset  
+- Lectura de archivos Excel con Pandas  
+- Validación inicial del dataset  
 
 ### 2. Exploración de datos
-- Revisión de columnas  
-- Identificación de valores nulos o inconsistencias  
+- Revisión de columnas y tipos de datos  
+- Detección de valores nulos e inconsistencias  
 
 ### 3. Limpieza de datos
-- Ajustes básicos en el dataset  
+- Ajustes iniciales en la estructura del dataset  
 - Preparación de la información para análisis  
+
+---
+
+## Estado del proyecto
+
+### ✔ Implementado
+- Carga de datos desde Excel  
+- Exploración del dataset  
+- Limpieza inicial de datos  
+- Estructuración básica del entorno de análisis  
+
+### En progreso
+- Limpieza y transformación más profunda  
+- Estandarización de variables contables  
+- Organización del pipeline en scripts reutilizables  
+
+### Próximas etapas
+- Cálculo de KPIs financieros  
+- Análisis exploratorio completo (EDA)  
+- Consultas SQL  
+- Desarrollo de dashboard en Power BI  
 
 ---
 
 ## Tecnologías utilizadas
 
-- Python  
-- Pandas  
+- Python (Pandas)  
 - Jupyter Notebook  
 - Excel  
-- Git + GitHub  
+- Git & GitHub  
 - VS Code  
 
 ---
@@ -93,50 +109,40 @@ El trabajo se desarrolla de forma progresiva:
 SIFA_finanzas/
 
 - src/
-  Contiene scripts de procesamiento y funciones principales del pipeline.
+  Scripts de procesamiento y lógica del pipeline.
 
 - notebooks/
-  Contiene el análisis exploratorio inicial.
-  Ejemplo: 01_analisis_inicial.ipynb
+  Análisis exploratorio (EDA inicial).
 
 - data/
   - raw/
-    Datos originales sin modificar (Excel).
+    Datos originales en Excel.
   - clean/
     Datos procesados y limpios.
 
 - reports/
-  Archivos de salida, resultados y documentación de análisis.
+  Resultados de análisis y salidas del proyecto.
 
 - sql/
-  Consultas SQL utilizadas para análisis.
+  Consultas SQL utilizadas en el análisis.
 
 - dashboard/
-  Archivos de visualización en Power BI.
+  Visualizaciones en Power BI.
 
 - README.md
   Documentación principal del proyecto.
 
 ---
 
-## Estado actual del proyecto
-
-Actualmente el proyecto incluye:
-
-- Carga de datos desde Excel  
-- Exploración del dataset  
-- Proceso de limpieza de datos  
-
-El proyecto se encuentra actualmente en construcción progresiva del pipeline de análisis.
-
----
-
 ## Aplicación del proyecto
 
-Este proyecto surge como un ejercicio práctico de análisis de datos financieros y procesamiento de información contable.
+Este proyecto simula un caso real de análisis financiero donde los datos requieren ser limpiados y estructurados antes de generar valor analítico.
 
-Se enmarca dentro del aprendizaje en:
+Se enfoca en el desarrollo de habilidades en:
 
-- Análisis de datos  
-- Procesamiento de datos financieros  
-- Introducción a Business Intelligence  
+- Preparación y limpieza de datos  
+- Análisis exploratorio  
+- Procesamiento de información financiera  
+- Fundamentos de Business Intelligence  
+
+---
