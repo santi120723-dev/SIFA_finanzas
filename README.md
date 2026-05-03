@@ -50,13 +50,13 @@ Construir paso a paso un flujo de trabajo que permita:
 El trabajo se desarrolla de forma progresiva:
 
 **1. Datos en Excel**  
-⬇  
+
 **2. Carga en Python (Pandas)**  
-⬇  
+
 **3. Exploración del dataset**  
-⬇  
+
 **4. Limpieza de datos**  
-⬇  
+
 **5. Preparación para análisis futuros**
 
 ---
