@@ -91,19 +91,31 @@ El trabajo se desarrolla de forma progresiva:
 ## Estructura del proyecto
 
 SIFA_finanzas/
-│
-├── src/
-├── notebooks/
-│ └── 01_analisis_inicial.ipynb
-│
-├── data/
-│ ├── raw/
-│ └── clean/
-│
-├── reports/
-├── sql/
-├── dashboard/
-└── README.md
+
+- src/
+  Contiene scripts de procesamiento y funciones principales del pipeline.
+
+- notebooks/
+  Contiene el análisis exploratorio inicial.
+  Ejemplo: 01_analisis_inicial.ipynb
+
+- data/
+  - raw/
+    Datos originales sin modificar (Excel).
+  - clean/
+    Datos procesados y limpios.
+
+- reports/
+  Archivos de salida, resultados y documentación de análisis.
+
+- sql/
+  Consultas SQL utilizadas para análisis.
+
+- dashboard/
+  Archivos de visualización en Power BI.
+
+- README.md
+  Documentación principal del proyecto.
 
 ---
 
