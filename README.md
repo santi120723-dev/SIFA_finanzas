@@ -4,7 +4,7 @@
 
 ## Estado del proyecto
 
-Este proyecto corresponde a una primera versión (v1) de un análisis exploratorio de datos financieros.
+V1: Consistió en un proceso exploratorio de limpieza manual en Jupyter Notebook. Esta versión permitió entender la estructura del dataset, pero no era un proceso reproducible ni escalable.
 
 Actualmente el proyecto se encuentra en fase de desarrollo.
 
@@ -119,13 +119,7 @@ SIFA_finanzas/
 
 ---
 
-## Estado actual del proyecto
-
-Actualmente el proyecto incluye:
-
-- Carga de datos desde Excel  
-- Exploración del dataset  
-- Proceso de limpieza de datos  
+## Estado actual del proyecto  
 
 El proyecto se encuentra actualmente en construcción progresiva del pipeline de análisis.
 
