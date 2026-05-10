@@ -1,148 +1,108 @@
-# SIFA_finanzas – Análisis de Datos Financieros (Python + Pandas)
-
----
-
+### SIFA_finanzas – Análisis de Datos Financieros (Python + Pandas)
 ## Descripción
+Proyecto de análisis de datos financieros enfocado en la limpieza, transformación y exploración de información contable, con enfoque en Business Intelligence  y análisis financiero.
 
-Proyecto de análisis de datos financieros enfocado en la limpieza, transformación y exploración de información contable para su uso en procesos de análisis y Business Intelligence.
+Este proyecto forma parte de un proceso de transición profesional desde el área contable hacia el rol de Analista de Datos Financiero y Business Intelligence, aprovechando experiencia previa en contabilidad para fortalecer el análisis de datos y la toma de decisiones.
+Actualmente, el proyecto evoluciona desde una versión exploratoria en Jupyter Notebook hacia una arquitectura estructurada basada en un pipeline de datos reproducible (ETL).
 
-Actualmente se desarrolla una primera versión (v1) orientada a la construcción de un pipeline de datos reproducible.
-
----
-
-## Resultado actual
-
-Hasta el momento, el proyecto permite:
-
-- Cargar datos financieros desde archivos Excel  
-- Explorar la estructura del dataset  
-- Identificar problemas de calidad de datos  
-- Realizar procesos iniciales de limpieza en Python (Pandas)  
-- Preparar un dataset base para análisis posteriores  
-
----
-
-## Aprendizajes clave
-
-Durante esta primera fase se identificó que los datos financieros presentan problemas de calidad que impactan directamente el análisis, entre ellos:
-
-- Valores nulos en columnas relevantes  
-- Inconsistencias en nombres de cuentas  
-- Formatos no estandarizados  
-
-Esto evidencia la importancia de la limpieza y transformación de datos como etapa fundamental antes de calcular KPIs o construir visualizaciones.
-
----
+En esta segunda fase se inicia la construcción de la capa de extracción (Extract) de datos de forma modular y escalable.
 
 ## Objetivo del proyecto
-
 Desarrollar un flujo de trabajo que permita:
+    • Automatizar la carga de datos financieros desde múltiples fuentes 
+    • Estandarizar la lectura de archivos contables 
+    • Construir un pipeline de datos reproducible (ETL) 
+    • Preparar datos para análisis financiero y Business Intelligence 
+    • Simular un entorno real de análisis de datos aplicado a finanzas 
 
-- Transformar datos financieros en información estructurada  
-- Preparar datasets listos para análisis  
-- Construir la base para KPIs financieros y dashboards  
-- Simular un entorno real de análisis de datos aplicado a finanzas  
+## Funcionalidades actuales
+Hasta el momento, el proyecto permite:
+    • Cargar datos desde archivos Excel, CSV y TXT 
+    • Centralizar rutas mediante config.py 
+    • Implementar una función genérica de carga en la capa ETL (src/extract.py) 
+    • Validar existencia de archivos antes de la lectura 
+    • Manejar errores básicos durante la carga de datos 
+    • Convertir archivos en estructuras DataFrame con Pandas 
 
----
+## Aprendizajes clave
+Durante esta fase se evidenció la importancia de estructurar la carga de datos como un sistema reutilizable en lugar de código aislado en notebooks.
 
-## Enfoque del análisis
-
-El proyecto sigue un flujo estructurado de datos:
-
-1. Ingesta de datos (Excel)  
-2. Carga en Python (Pandas)  
-3. Exploración del dataset  
-4. Limpieza y estandarización  
-5. Preparación para análisis y visualización  
-
----
+Desde la perspectiva de análisis financiero y Business Intelligence, se identifican principios clave:
+    • Los datos contables provienen de múltiples formatos (Excel, CSV, TXT) 
+    • La validación previa de información es esencial para garantizar confiabilidad 
+    • Separar configuración y lógica mejora la escalabilidad del proyecto 
+    • El manejo de errores es fundamental en pipelines de datos reales 
+    • La carpeta src/ representa el núcleo del proceso ETL 
+Esto refuerza la importancia de la extracción de datos como primera etapa crítica en cualquier proceso de análisis financiero.
 
 ## Trabajo técnico realizado
-
-### 1. Carga de datos
-- Lectura de archivos Excel con Pandas  
-- Validación inicial del dataset  
-
-### 2. Exploración de datos
-- Revisión de columnas y tipos de datos  
-- Detección de valores nulos e inconsistencias  
-
-### 3. Limpieza de datos
-- Ajustes iniciales en la estructura del dataset  
-- Preparación de la información para análisis  
-
----
+1. Configuración del sistema
+    • Creación de config.py para gestión centralizada de rutas 
+    • Eliminación de rutas hardcodeadas 
+    • Organización de archivos contables del proyecto 
+2. Capa de extracción (Extract)
+    • Implementación de función genérica load_file() en src/extract.py 
+    • Lectura de archivos en múltiples formatos 
+    • Uso de Pandas para conversión a DataFrame 
+    • Estandarización del proceso de carga de datos 
+3. Manejo de datos
+    • Validación de existencia de archivos 
+    • Control de errores durante la carga 
+    • Preparación de datasets para análisis posterior 
 
 ## Estado del proyecto
-
-### ✔ Implementado
-- Carga de datos desde Excel  
-- Exploración del dataset  
-- Limpieza inicial de datos  
-- Estructuración básica del entorno de análisis  
-
-### En progreso
-- Limpieza y transformación más profunda  
-- Estandarización de variables contables  
-- Organización del pipeline en scripts reutilizables  
-
-### Próximas etapas
-- Cálculo de KPIs financieros  
-- Análisis exploratorio completo (EDA)  
-- Consultas SQL  
-- Desarrollo de dashboard en Power BI  
-
----
+✔ Implementado
+    • Configuración centralizada de rutas 
+    • Carga de archivos financieros (Excel, CSV, TXT) 
+    • Capa de extracción reutilizable 
+    • Manejo básico de errores 
+    • Estructura modular del proyecto 
+En progreso
+    • Validación más profunda de datos contables 
+    • Inicio de la fase de transformación (Transform) 
+    • Estandarización de variables financieras 
+    • Preparación de datasets limpios para análisis 
+Próximas etapas
+    • Limpieza estructurada de datos financieros 
+    • Cálculo de KPIs contables 
+    • Reglas de consistencia (Debe = Haber) 
+    • Análisis exploratorio de datos (EDA) 
+    • Desarrollo de dashboard en Power BI 
 
 ## Tecnologías utilizadas
-
-- Python (Pandas)  
-- Jupyter Notebook  
-- Excel  
-- Git & GitHub  
-- VS Code  
-
----
+    • Python (Pandas) 
+    • Jupyter Notebook 
+    • Excel 
+    • Git & GitHub 
+    • VS Code
 
 ## Estructura del proyecto
-
 SIFA_finanzas/
-
-- src/
-  Scripts de procesamiento y lógica del pipeline.
-
-- notebooks/
-  Análisis exploratorio (EDA inicial).
-
-- data/
-  - raw/
-    Datos originales en Excel.
-  - clean/
-    Datos procesados y limpios.
-
-- reports/
-  Resultados de análisis y salidas del proyecto.
-
-- sql/
-  Consultas SQL utilizadas en el análisis.
-
-- dashboard/
-  Visualizaciones en Power BI.
-
-- README.md
-  Documentación principal del proyecto.
-
----
+* data_clean/
+* data_raw/
+   - libro_mayor_2025.xlsx
+   -  movimientos_inventario_2025.xlsx
+   - ordenes_fabricacion_2025.xlsx
+* notebooks/
+   - 01_carga_datos.ipynb
+* reports/
+* src/
+   - config.py
+   - extract.py
+   - main.py
+* tests/
+* README.md
 
 ## Aplicación del proyecto
+Este proyecto simula un caso real de análisis financiero donde los datos provienen de múltiples fuentes y deben ser estructurados antes de generar valor analítico.
+Se enfoca en el desarrollo de habilidades clave para el rol de Analista de Datos Financiero y Business Intelligence, integrando experiencia previa en contabilidad con herramientas de análisis de datos.
 
-Este proyecto simula un caso real de análisis financiero donde los datos requieren ser limpiados y estructurados antes de generar valor analítico.
+## Habilidades desarrolladas:
+    • Ingeniería básica de datos 
+    • Preparación y carga de datos financieros 
+    • Manejo de archivos contables heterogéneos 
+    • Construcción de pipelines de datos (ETL) 
+    • Fundamentos de Business Intelligence 
 
-Se enfoca en el desarrollo de habilidades en:
-
-- Preparación y limpieza de datos  
-- Análisis exploratorio  
-- Procesamiento de información financiera  
-- Fundamentos de Business Intelligence  
-
----
+## Cierre profesional
+Este proyecto representa un paso en la transición hacia roles enfocados en análisis de datos, donde el objetivo es pasar de la operación contable tradicional al uso de datos para la toma de decisiones estratégicas y generación de valor empresarial.
