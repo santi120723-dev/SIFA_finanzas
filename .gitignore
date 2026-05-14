@@ -9,3 +9,6 @@ data/clean/*
 
 .ipynb_checkpoints/
 .DS_Store
+
+logs/
+*.log

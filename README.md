@@ -5,7 +5,7 @@ Proyecto de análisis de datos financieros enfocado en la limpieza, transformaci
 Este proyecto forma parte de un proceso de transición profesional desde el área contable hacia el rol de Analista de Datos Financiero y Business Intelligence, aprovechando experiencia previa en contabilidad para fortalecer el análisis de datos y la toma de decisiones.
 Actualmente, el proyecto evoluciona desde una versión exploratoria en Jupyter Notebook hacia una arquitectura estructurada basada en un pipeline de datos reproducible (ETL).
 
-En esta segugit statusnda fase se inicia la construcción de la capa de extracción (Extract) de datos de forma modular y escalable.
+n esta segunda fase se inicia la construcción de la capa de extracción (Extract) de datos de forma modular y escalable.
 
 ## Objetivo del proyecto
 Desarrollar un flujo de trabajo que permita:
@@ -78,11 +78,10 @@ Próximas etapas
 
 ## Estructura del proyecto
 SIFA_finanzas/
-* data_clean/
-* data_raw/
-   - libro_mayor_2025.xlsx
-   -  movimientos_inventario_2025.xlsx
-   - ordenes_fabricacion_2025.xlsx
+* data/
+   - raw/ (Fuentes: libro_mayor_2025.xlsx, etc.)
+   - staging/
+   - clean/
 * notebooks/
    - 01_carga_datos.ipynb
 * reports/
