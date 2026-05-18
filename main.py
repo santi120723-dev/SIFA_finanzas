@@ -1,4 +1,4 @@
-from src.extract import (
+from src.ingestion.extract import (
     load_libro_mayor,
     load_movimientos_inventario,
     load_ordenes_fabricacion
