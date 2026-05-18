@@ -11,12 +11,20 @@ from src.config import (
     ORDENES_FABRICACION
 )
 
+# Columnas mínimas esperadas por tipo de archivo
+REQUIRED_COLUMNS = {
+    "libro_mayor": ["Fecha", "Cuenta", "Debe", "Haber"],
+    "inventario": ["Codigo", "Cantidad", "Costo"],
+    "ordenes": ["ID_Orden", "Estado"]
+}
+
 # =========================
 # FUNCIÓN GENERAL
 # =========================
 
 def load_file(
-    file_path: Path
+    file_path: Path,
+    file_type: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
 
     try:
@@ -77,6 +85,18 @@ def load_file(
                 f"Archivo vacío: {file_path.name}"
             )
 
+        # =========================
+        # VALIDAR COLUMNAS (Práctica de mañana)
+        # =========================
+        if file_type in REQUIRED_COLUMNS:
+            missing = [col for col in REQUIRED_COLUMNS[file_type] if col not in df.columns]
+            if missing:
+               
+                raise ValueError(
+                    f"Columnas faltantes en {file_path.name}: {missing}. "
+                    f"Columnas encontradas: {list(df.columns)}"
+                )
+
         logger.info(
             (
                 f"Archivo cargado: "
@@ -101,19 +121,19 @@ def load_file(
 # FUNCIONES ESPECÍFICAS
 # =========================
 
-def load_libro_mayor():
+def load_libro_mayor() -> Optional[pd.DataFrame]:
 
     return load_file(LIBRO_MAYOR)
 
 
-def load_movimientos_inventario():
+def load_movimientos_inventario() -> Optional[pd.DataFrame]:
 
     return load_file(
         MOVIMIENTOS_INVENTARIO
     )
 
 
-def load_ordenes_fabricacion():
+def load_ordenes_fabricacion() -> Optional[pd.DataFrame]:
 
     return load_file(
         ORDENES_FABRICACION

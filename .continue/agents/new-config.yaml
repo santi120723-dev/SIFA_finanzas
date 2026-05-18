@@ -1,0 +1,10 @@
+name: Cloud Config
+version: 1.0.0
+schema: v1
+
+models:
+  - name: DeepSeek Chat
+    provider: openai
+    model: deepseek/deepseek-chat
+    apiBase: https://openrouter.ai/api/v1
+    apiKey: TU_OPENROUTER_API_KEY
