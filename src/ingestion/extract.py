@@ -13,9 +13,9 @@ from src.config import (
 
 # Columnas mínimas esperadas por tipo de archivo
 REQUIRED_COLUMNS = {
-    "libro_mayor": ["Fecha", "Cuenta", "Debe", "Haber"],
-    "inventario": ["Codigo", "Cantidad", "Costo"],
-    "ordenes": ["ID_Orden", "Estado"]
+    "libro_mayor": ["fecha", "cuenta", "debe", "haber"],
+    "inventario": ["codigo", "cantidad", "costo"],
+    "ordenes": ["id_orden", "estado"]
 }
 
 # =========================
@@ -24,8 +24,10 @@ REQUIRED_COLUMNS = {
 
 def load_file(
     file_path: Path,
-    file_type: Optional[str] = None
-) -> Optional[pd.DataFrame]:
+    file_type: Optional[str] = None,
+    header: int = 0
+) -> pd.DataFrame:
+    
 
     try:
 
@@ -51,6 +53,7 @@ def load_file(
 
             df = pd.read_excel(
                 file_path,
+                header=header,
                 engine="openpyxl"
             )
 
@@ -74,7 +77,9 @@ def load_file(
             raise ValueError(
                 f"Formato no soportado: {extension}"
             )
-
+        
+        df.columns = df.columns.str.strip() 
+        
         # =========================
         # VALIDAR VACÍO
         # =========================
@@ -88,17 +93,9 @@ def load_file(
         # =========================
         # VALIDAR COLUMNAS (Práctica de mañana)
         # =========================
-        if file_type in REQUIRED_COLUMNS:
-            missing = [col for col in REQUIRED_COLUMNS[file_type] if col not in df.columns]
-            if missing:
-               
-                raise ValueError(
-                    f"Columnas faltantes en {file_path.name}: {missing}. "
-                    f"Columnas encontradas: {list(df.columns)}"
-                )
 
         logger.info(
-            (
+            (   
                 f"Archivo cargado: "
                 f"{file_path.name} | "
                 f"Filas: {df.shape[0]} | "
@@ -114,27 +111,33 @@ def load_file(
             f"Error cargando {file_path.name}: {e}"
         )
 
-        return None
+        raise
 
 
 # =========================
 # FUNCIONES ESPECÍFICAS
-# =========================
+# ========================= 
 
-def load_libro_mayor() -> Optional[pd.DataFrame]:
-
-    return load_file(LIBRO_MAYOR)
-
-
-def load_movimientos_inventario() -> Optional[pd.DataFrame]:
+def load_libro_mayor() -> pd.DataFrame:
 
     return load_file(
-        MOVIMIENTOS_INVENTARIO
+        LIBRO_MAYOR,
+        file_type="libro_mayor",
+        header=2
     )
 
 
-def load_ordenes_fabricacion() -> Optional[pd.DataFrame]:
+def load_movimientos_inventario() -> pd.DataFrame:
 
     return load_file(
-        ORDENES_FABRICACION
+        MOVIMIENTOS_INVENTARIO,
+        file_type="inventario"
+    )
+
+
+def load_ordenes_fabricacion() -> pd.DataFrame:
+
+    return load_file(
+        ORDENES_FABRICACION,
+        file_type="ordenes"
     )

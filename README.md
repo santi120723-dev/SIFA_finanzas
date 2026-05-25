@@ -1,104 +1,322 @@
 # SIFA_finanzas-Pipeline_ETL_para_Finanzas_(Python+Pandas)
+
 ## Resumen Ejecutivo
-Este proyecto implementa un pipeline ETL modular para procesar datos contables heterogéneos (Excel, CSV y TXT) y generarlos en un formato estructurado listo para análisis financiero. Utiliza una arquitectura Medallion (Bronze → Silver → Gold) para asegurar trazabilidad y escalabilidad del sistema.
+Este proyecto implementa un pipeline ETL modular orientado a datos financieros reales utilizando Python y Pandas. El sistema procesa libros mayores heterogéneos mediante una arquitectura Medallion (Bronze → Silver → Gold), incorporando validaciones contables, limpieza reusable, logging centralizado y pruebas end-to-end sobre datasets reales.
+
+Durante esta etapa el proyecto evolucionó desde una estructura inicial de ingesta hacia un pipeline más desacoplado y preparado para escenarios reales de integración ETL y Business Intelligence financiero.
+
+---
 
 ## Descripción
-Proyecto centrado en la transición de datos contables discontinuos a información útil para toma de decisiones. Incluye:
+Proyecto enfocado en transformar datasets contables inconsistentes en información estructurada, validada y reutilizable para futuros procesos analíticos y dashboards financieros.
 
-- Extracción y validación básica: Carga de archivos y revisión inicial de integridad.
-- Estructura profesional: Modularización del código y jerarquía de capas (Bronze/Silver/Gold).
-- Fundamento para BI: Preparación de datos para futuros análisis como KPIs y modelos en estrella.
+Actualmente incluye:
+
+- Pipeline ETL modular:
+Separación clara entre ingestión, limpieza, validación y preparación analítica.
+
+- Arquitectura Medallion:
+Organización de datasets en capas Bronze, Silver y preparación inicial de Gold.
+
+- Validaciones financieras:
+Implementación de reglas básicas de integridad contable como validación Debe = Haber.
+
+- Limpieza reusable:
+Funciones desacopladas para normalización de columnas, manejo de nulos y estandarización estructural.
+
+- Testing e integración:
+Pruebas sobre datasets financieros reales utilizando notebooks y testing automatizado con pytest.
+
+---
 
 ## Estado del Proyecto
-#### Implementado (Funcional)
-* Arquitectura Medallion:
-- Directorios definidos: data/bronze/, data/silver/, data/gold/.
-- Capa Bronze: Contiene archivos de origen en Excel, CSV y TXT.
-- Configuración centralizada: src/config.py usa pathlib para manejar rutas.
-- Logging: Sistema en src/logger.py que escribe en logs/pipeline.log y consola.
 
-#### Capa de extracción (Ingestion):
-- Función load_file() en src/ingestion/extract.py que carga archivos soportados (.xlsx, .csv, .txt).
-- Validaciones: Existencia del archivo, formato válido y DataFrame no vacío.
-- Manejo de errores con logging automático.
-- Uso de type hints para garantizar robustez.
+### Implementado (Funcional)
 
-#### Modularidad:
-- Estructura en módulos: ingestion/, transformations/, validations/, utils/, orchestration/.
-- Rutas absolutas para evitar hardcoding.
+#### Arquitectura Medallion
+- Directorios definidos:
+  - data/bronze/
+  - data/silver/
+  - data/gold/
 
-### En desarrollo (Sin implementar)
-### Capa de transformación (Silver):
-- Carpeta src/transformations/ existe, pero no contiene código.
-- Objetivo pendiente: Limpieza (normalización de columnas, fechas), validaciones contables (ej. Debe = Haber).
+- Separación por dominios:
+  - accounting/
+  - inventory/
+  - manufacturing/
 
-#### Validaciones contables:
-Reglas definidas en comentarios (ej. consistencia de saldos), pero no implementadas en código.
+- Configuración centralizada mediante `src/config.py`.
 
-#### Capa de carga (Gold):
-Sin desarrollo: No existen módulos para exportar datos a data/gold/ ni integrar con bases de datos.
+- Uso de `pathlib.Path` para manejo robusto de rutas.
+
+---
+
+#### Capa Bronze (Ingestion)
+
+##### Funcionalidades implementadas
+- `load_file()` en `src/ingestion/extract.py`
+- Lectura de archivos:
+  - `.xlsx`
+  - `.csv`
+  - `.txt`
+
+##### Validaciones iniciales
+- Archivo existente.
+- Formato soportado.
+- DataFrame no vacío.
+- Logging automático de errores.
+
+##### Mejoras implementadas
+- Integración correcta desde notebooks.
+- Compatibilidad con rutas absolutas.
+- Eliminación de hardcoding de rutas.
+
+---
+
+#### Capa Silver (Transformación y limpieza)
+
+##### Limpieza reusable implementada
+Archivo:
+`src/utils/cleaning.py`
+
+Funciones actuales:
+- normalización de nombres de columnas
+- limpieza de strings
+- manejo de valores nulos
+- estandarización estructural
+- preparación reusable de DataFrames financieros
+
+##### Normalización financiera
+Archivo:
+`src/preprocess/normalizer.py`
+
+- `normalize_libro_mayor()`
+- integración desacoplada de reglas de transformación
+- preparación estructural previa a validaciones
+
+---
+
+#### Validaciones financieras
+
+Archivo:
+`src/validations/business_rules.py`
+
+##### Implementado
+- `validate_debe_haber()`
+
+##### Funcionalidad
+- Validación de integridad contable:
+  - suma Debe ≈ suma Haber
+- manejo de tolerancia configurable
+- manejo explícito de errores
+- logging de diferencias detectadas
+
+##### Validaciones estructurales
+- columnas requeridas
+- datasets incompletos
+- errores de integración ETL
+
+---
+
+#### Logging y trazabilidad
+
+Archivo:
+`src/logger.py`
+
+##### Implementado
+- logging centralizado
+- salida en:
+  - consola
+  - `logs/pipeline.log`
+- timestamps automáticos
+- registro de:
+  - errores
+  - warnings
+  - ejecución del pipeline
+  - métricas de procesamiento
+
+---
+
+#### Testing
+
+##### Pytest
+Carpeta:
+`tests/`
+
+##### Cobertura actual
+- carga de archivos
+- formatos inválidos
+- archivos vacíos
+- validaciones contables
+- pruebas de integración iniciales
+
+##### Fixtures de testing
+- bronze_test.csv
+- bronze_test.xlsx
+- bronze_test_missing.xlsx
+
+---
+
+#### Integración Notebook + ETL
+
+##### Implementado
+- notebooks integrados al pipeline
+- ejecución end-to-end:
+  - Bronze → Normalize → Validate
+
+##### Problemas resueltos
+- `ModuleNotFoundError: No module named 'src'`
+- manejo incorrecto de rutas relativas
+- conflictos entre `str` y `Path`
+- diferencias estructurales entre archivos Excel
+
+---
+
+### En desarrollo (Sin implementar completamente)
+
+#### Capa Gold
+
+##### Parcialmente preparada
+- estructura `data/gold/`
+- preparación para:
+  - KPIs financieros
+  - reporting
+  - datasets analíticos
+
+##### Pendiente
+- exportación definitiva a Parquet/CSV
+- modelo dimensional
+- tablas analíticas
+- métricas financieras
+
+---
+
+#### SQL analítico
+
+##### Pendiente
+- consultas SQL financieras
+- agregaciones analíticas
+- construcción de KPIs
+
+---
+
+#### Dashboards BI
+
+##### Pendiente
+- Power BI
+- visualizaciones financieras
+- reporting ejecutivo
+
+---
 
 ## Tecnologías Utilizadas
-Core: Python 3.x, Pandas, Pathlib.
-Tools: Git y GitHub para control de versiones, VS Code, Logging estándar de Python.
+
+### Core
+- Python 3.11.7
+- Pandas
+- Pathlib
+- Pytest
+
+### Herramientas
+- Git & GitHub
+- VS Code
+- Jupyter Notebook
+- Logging estándar de Python
+
+---
 
 ## Estructura del Proyecto
 
 ```text
 SIFA_finanzas/
-    data/
-        bronze/
-            accounting/
-                libro_mayor_2025.xlsx
-            inventory/
-                movimientos_inventario_2025.xlsx
-            manufacturing/
-                ordenes_fabricacion_2025.xlsx
 
-        silver/
-            accounting/
-            inventory/
-            manufacturing/
-
-        gold/
-            finance/
-            management/
-            operations/
-
-    notebooks/
-
-    src/
-        config.py
-        ingestion/
-            extract.py
-        transformations/
-        validations/
-        utils/
-        orchestration/
-        logger.py
-
-    logs/
-    sql/
-    reports/
-    README.md
+│
+├── data/
+│   ├── bronze/
+│   │   ├── accounting/
+│   │   │   └── libro_mayor_2025.xlsx
+│   │   ├── inventory/
+│   │   └── manufacturing/
+│   │
+│   ├── silver/
+│   │   ├── accounting/
+│   │   ├── inventory/
+│   │   └── manufacturing/
+│   │
+│   └── gold/
+│       ├── finance/
+│       ├── management/
+│       └── operations/
+│
+├── logs/
+│   └── pipeline.log
+│
+├── notebooks/
+│   ├── 01_exploration.ipynb
+│   ├── 02_test_cleaning.ipynb
+│   └── 03_test_pipeline.ipynb
+│
+├── reports/
+│
+├── scripts/
+│   └── generate_dummy_data.py
+│
+├── sql/
+│   ├── silver/
+│   └── gold/
+│
+├── src/
+│   ├── config.py
+│   ├── logger.py
+│   │
+│   ├── ingestion/
+│   │   └── extract.py
+│   │
+│   ├── preprocess/
+│   │   └── normalizer.py
+│   │
+│   ├── transformations/
+│   │
+│   ├── validations/
+│   │   └── business_rules.py
+│   │
+│   ├── utils/
+│   │   └── cleaning.py
+│   │
+│   └── orchestration/
+│
+├── tests/
+│   ├── test_extract.py
+│   ├── test_validations.py
+│   └── test_cleaning.py
+│
+└── README.md
 ```
 
-## Lecciones Aprendidas
-- La arquitectura modular permite escalar el sistema sin romper funcionalidades existentes.
-- La capa Bronze ya es operativa, lo que provee una base sólida para futuras transformaciones.
-- El logging facilita el seguimiento y depuración del proceso.
+#### lecciones Aprendidas
+- La complejidad real de un pipeline ETL muchas veces aparece durante la integración entre módulos y no únicamente en la transformación de datos.
+- Los notebooks requieren manejo explícito de rutas y contexto del proyecto para integrarse correctamente con arquitecturas modulares.
+- La separación de responsabilidades facilita debugging, testing y escalabilidad.
+- La calidad de datos en pipelines financieros depende tanto de validaciones técnicas como de reglas contables.
+- El uso de logging y testing automatizado mejora considerablemente la trazabilidad y mantenibilidad del sistema.
 
-## Próximos Pasos
-### Implementar la capa Silver:
-- Escribir reglas de limpieza y validación en src/transformations/.
-- Ejemplos: Estandarizar fechas (YYYY-MM-DD), limpiar nombres de columnas, validar integrity contable.
+#### Próximos Pasos
+* Finalizar la capa Silver
+- Consolidar reglas reutilizables de limpieza.
+- Mejorar validaciones estructurales.
+- Añadir validaciones financieras adicionales.
+* Desarrollar la capa Gold
+- Exportar datasets analíticos a Parquet.
+- Construir KPIs financieros.
+- Preparar datasets para BI y reporting.
+* Implementar SQL analítico
+- Crear consultas financieras reutilizables.
+- Construir agregaciones para análisis financiero.
+* Integración BI
+- Conectar Power BI a la capa Gold.
+- Diseñar dashboards financieros iniciales.
+* Mejorar testing
+- Añadir pruebas end-to-end automatizadas.
+- Incrementar cobertura de reglas de negocio.
 
-### Desarrollar la capa Gold:
-- Exportar datos a Parquet o CSV en data/gold/.
-- Crear un modelo en estrella (tabla de hechos + dimensiones).
-
-### Automatizar el pipeline:
-Integrar herramientas como Airflow para ejecuciones programadas.
-
-## Caso de Uso
-Simulación de pipeline para análisis financiero y BI en entornos contables reales.
+#### Caso de Uso
+Simulación de pipeline financiero orientado a Business Intelligence y análisis contable sobre datasets reales. El proyecto busca representar escenarios comunes de integración ETL financiera, calidad de datos y preparación analítica para reporting empresarial.
