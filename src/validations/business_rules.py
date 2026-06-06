@@ -1,49 +1,44 @@
 import pandas as pd
+
 from src.logger import logger
+
+from src.validations.generic_validations import (
+    validate_required_columns
+)
+
 
 def validate_debe_haber(
     df: pd.DataFrame,
     tolerance: float = 1.0
 ) -> bool:
-    """
-    Valida que la diferencia entre sumatoria
-    de 'debe' y 'haber' sea ≤ tolerancia.
-    """
 
-    try:
+    validate_required_columns(df)
 
-        debe_sum = df['debe'].sum()
-        haber_sum = df['haber'].sum()
-
-    except KeyError as e:
-
-        raise ValueError(
-            f"Faltan columnas requeridas: {e}"
-        ) from e
+    debe_sum = df["debe"].sum()
+    haber_sum = df["haber"].sum()
 
     diferencia = abs(
         debe_sum - haber_sum
     )
 
     logger.info(
-        f"Validate Debe/Haber: "
-        f"Debe={debe_sum:.2f}, "
-        f"Haber={haber_sum:.2f}, "
+        f"Validate Debe/Haber | "
+        f"Debe={debe_sum:.2f} | "
+        f"Haber={haber_sum:.2f} | "
         f"Diff={diferencia:.2f}"
     )
 
     if diferencia > tolerance:
 
         raise ValueError(
-            f"❌ Error de validación contable: "
-            f"Debe={debe_sum:.2f} vs "
-            f"Haber={haber_sum:.2f} "
-            f"(diferencia={diferencia:.2f} "
-            f"> tolerancia={tolerance})"
+            f"Desbalance contable detectado | "
+            f"Debe={debe_sum:.2f} | "
+            f"Haber={haber_sum:.2f} | "
+            f"Diferencia={diferencia:.2f}"
         )
 
     logger.info(
-        "✅ Validación de Debe/Haber pasada correctamente."
+        "Validación Debe/Haber completada."
     )
 
     return True
