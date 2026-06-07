@@ -459,73 +459,319 @@ Pipeline ETL modular funcional con:
 
 ---
 
-## En construcción
+## Semana 5 — Sistema de Validaciones Financieras
 
-## Semana 5–6 — Consolidación de testing y estabilización inicial de Silver Layer
+### Objetivo
 
-### Objetivo real
+Implementar un sistema de validaciones reutilizable que permita detectar errores estructurales y financieros antes de que los datos continúen hacia etapas posteriores del pipeline.
 
-Fortalecer la robustez técnica del pipeline y cerrar correctamente la primera versión estable de Silver Layer para el dominio contable principal.
+### ✅ LO QUE YA TIENES HECHO HOY
 
-### Prioridad principal
+#### Sistema base de validaciones consolidado
 
-#### Testing automatizado
+Ya implementaste correctamente la estructura principal de validaciones:
 
-Implementación de:
+src/validations/severity.py
 
-- `tests/test_cleaning.py`
-- `tests/test_validations.py`
+src/validations/generic_validations.py
 
-Ampliando coverage sobre:
+src/validations/business_rules.py
 
-- `cleaning.py`
-- `general_quality.py`
-- `business_rules.py`
+src/validations/validation_runner.py
 
-### Validaciones prioritarias reales
+src/validations/warning_validations.py
 
-#### Accounting
+✔ La capa de validaciones ya se encuentra integrada y funcionando dentro del proyecto.
 
-Implementación y fortalecimiento de:
 
-- `validate_valid_dates()`
-- `validate_no_negative_amounts()`
-- `validate_required_columns()`
-- `validate_debe_haber()`
+#### Severidades definidas e integradas
 
-Además de:
+Actualmente el sistema contempla:
 
-- validación de cuentas contables
-- detección de balances inconsistentes
-- validación de filas incompletas
-- validación de tipos numéricos financieros
+* WARNING funcionando
 
-### Mejoras necesarias sobre libro mayor
+* INFO preparado conceptualmente
 
-- normalización robusta de fechas
-- limpieza de espacios invisibles
-- manejo de cuentas nulas
-- validación de encabezados desplazados
-- tratamiento de movimientos contables relacionados
-- estabilización de columnas inconsistentes
+* CRITICAL implementado
 
-### Expansión de datasets dummy
+✔ Las validaciones críticas ya pueden detener la ejecución cuando se detectan errores que comprometen la calidad o consistencia de la información.
 
-Fortalecimiento de:
+#### Validation runner funcional
 
-`scripts/generate_dummy_data.py`
+* ejecución centralizada mediante run_validations()
+* separación entre validaciones críticas y advertencias
+* estructura extensible para futuras reglas
+* retorno estructurado de resultados
 
-para cubrir escenarios como:
+✔ El motor de validaciones ya está operativo y desacoplado de las reglas específicas.
 
-- fechas inválidas
-- montos negativos
-- balances incorrectos
-- columnas faltantes
-- formatos corruptos
+#### Validaciones CRITICAL implementadas
+
+Actualmente existen validaciones críticas funcionales:
+
+* validate_required_columns()
+* validate_dates()
+* validate_debe_haber()
+
+✔ El sistema ya puede detectar errores estructurales y contables antes de que los datos continúen en el flujo de procesamiento.
+
+#### Validaciones WARNING funcionando
+
+Actualmente existen validaciones de advertencia como:
+
+* validate_nulls()
+* validate_empty_dataframe()
+* validate_duplicates()
+
+✔ El sistema ya genera alertas de calidad de datos sin interrumpir la ejecución.
+
+#### Integración con pipeline
+
+Ya lograste:
+
+* conectar run_validations(cleaned_df)
+* ejecutar validaciones después del proceso de limpieza
+* mantener compatibilidad con run_pipeline()
+* mantener la arquitectura desacoplada
+
+✔ El pipeline puede ejecutar validaciones automáticamente dentro del flujo ETL.
+
+#### Separación arquitectónica lograda
+
+Actualmente existe una separación clara entre:
+
+* ingestion → carga
+* cleaning → limpieza y estandarización
+* validations → control de calidad y reglas de negocio
+
+✔ La arquitectura permite seguir creciendo sin mezclar responsabilidades.
+
+#### Reutilización de validaciones
+
+Ya se implementó:
+
+generic_validations.py
+
+con reglas reutilizables como:
+
+* validate_required_columns()
+* validate_dates()
+
+✔ La lógica común ya no depende exclusivamente del dominio contable y puede reutilizarse en futuros datasets.
+
+#### Pruebas automatizadas implementadas
+
+Ya existen pruebas con pytest para:
+
+* columnas obligatorias
+* fechas inválidas
+* fechas nulas
+* desbalance contable
+* duplicados
+
+✔ Las validaciones principales ya cuentan con cobertura básica de pruebas automatizadas.
+
+#### Datasets de prueba creados
+
+Actualmente existen datasets de prueba como:
+
+* critical_imbalanced.csv
+* critical_imbalanced2.csv
+* missing_columns.csv
+* invalid_dates.csv
+* null_dates.csv
+* duplicates.csv
+* no_duplicates.csv
+
+✔ Ya existe una base reproducible para validar el comportamiento del sistema.
+
+---
+
+### ⚠️ LO QUE TE FALTA POR HACER
+
+#### Nuevas validaciones financieras
+
+Aún faltan reglas orientadas a calidad y consistencia como:
+
+* validate_data_types()
+* validate_value_ranges()
+* validaciones específicas por dominio
+
+❌ Todavía no existe cobertura para estos escenarios.
+
+#### Evolución de business_rules.py
+
+Actualmente contiene reglas contables básicas.
+
+Falta incorporar:
+
+* reglas financieras adicionales
+* reglas específicas de inventario
+* reglas específicas de fabricación
+* validaciones de negocio más complejas
+
+❌ La capa de reglas de negocio aún puede crecer significativamente.
+
+#### Selección de validaciones por dominio
+
+Actualmente todas las validaciones se ejecutan de forma global.
+
+Falta implementar:
+
+* asociación dominio → validaciones
+* ejecución contextual según tipo de dataset
+* registro de validaciones por dominio
+
+❌ Todavía no existe separación dinámica de reglas.
+
+#### Logging más estructurado
+
+Actualmente ya existen logs funcionales.
+
+Falta evolucionar hacia:
+
+* mayor granularidad por severidad
+* métricas de validación
+* reportes consolidados de ejecución
+* trazabilidad ampliada
+
+❌ Aún hay margen de mejora para observabilidad.
+
+#### Cobertura de pruebas
+
+Actualmente existen pruebas básicas.
+
+Falta incorporar:
+
+* tests de tipos de datos
+* tests de rangos
+* tests de integración completos
+
+❌ La cobertura todavía puede ampliarse.
+
+#### Preparación para nuevos dominios
+
+La arquitectura ya permite crecer.
+
+Falta implementar:
+
+* validaciones de inventario
+* validaciones de órdenes de fabricación
+* catálogo de reglas por dominio
+
+❌ La estructura está preparada, pero los nuevos dominios aún no han sido desarrollados.
+
+---
+
+## Semana 6 — Integración del Pipeline y Consolidación de Silver Layer
+
+### Objetivo
+
+Construir el primer flujo ETL completo reutilizable:
+
+Bronze → Clean → Validate → Silver
+
+dejando una Silver Layer estable y lista para futuras transformaciones analíticas.
+
+### Prioridad Principal
+
+#### Integración formal del pipeline
+
+Consolidar:
+
+* load_file()
+* clean_dataframe()
+* run_validations()
+* run_pipeline()
+
+mediante:
+
+* src/orchestration/run_pipeline.py
+
+✔ La base funcional del pipeline ya existe y será fortalecida durante esta etapa.
+
+### Flujo objetivo
+
+#### Pipeline Silver
+
+Bronze
+
+↓
+
+load
+
+↓
+
+clean
+
+↓
+
+validate
+
+↓
+
+save_silver
+
+### Archivos prioritarios
+
+* src/orchestration/run_pipeline.py
+* src/utils/export_silver.py
+* data/silver/accounting/
+* tests/
+
+### Exportación Silver
+
+#### Persistencia de datasets limpios
+
+Implementar:
+
+* export_silver()
+* exportación Parquet
+* creación automática de rutas
+* trazabilidad de archivos exportados
+
+### Testing prioritario
+
+#### Integración
+
+Implementar:
+
+* test_pipeline_integration.py
+
+Validando:
+
+* carga correcta
+* limpieza correcta
+* validaciones ejecutadas
+* generación correcta de archivos Silver
+
+### Validaciones adicionales
+
+#### Calidad del dato
+
+Implementar:
+
+* validate_data_types()
+* validate_value_ranges()
+
+#### Reutilización
+
+Diseñar validaciones para que puedan utilizarse en:
+
+* accounting
+* inventory
+* manufacturing
 
 ### Resultado esperado
 
-Silver Layer suficientemente robusta, testeable y estable para iniciar integración formal del pipeline.
+Primer pipeline ETL completo ejecutando:
+
+Bronze → Silver
+
+- de forma automatizada, reutilizable y preparada para futuras transformaciones analíticas.
+
+La Silver Layer quedará lista para soportar la construcción posterior de datasets analíticos en Gold Layer.
+
 
 ---
 
@@ -545,7 +791,7 @@ extract → clean → validate → export
 
 mediante:
 
-- `run_pipeline.py`
+- run_pipeline.py
 - logging integrado
 - validaciones desacopladas
 - exportación automatizada inicial
@@ -554,12 +800,16 @@ mediante:
 
 #### Accounting
 
-- validaciones financieras más profundas
-- validación de tipos numéricos
+Implementar:
+
+- reglas financieras adicionales
+- validaciones de integridad financiera
+- validaciones de tipos numéricos
 - trazabilidad de inconsistencias
-- manejo de errores críticos
 
 #### Inventory
+
+Implementar:
 
 - normalización de productos
 - validación de cantidades
@@ -567,96 +817,199 @@ mediante:
 
 #### Manufacturing
 
-- eliminación de columnas irrelevantes
+Implementar:
+
+- limpieza de columnas irrelevantes
 - validación de estados
-- limpieza básica operacional
+- normalización básica operacional
 
 ### Refactorización inicial
 
-- eliminación de lógica repetida
-- centralización de funciones reutilizables
-- separación estricta entre:
-  - limpieza
-  - validaciones
-  - reglas financieras
-  - exportación
+#### Reutilización
+
+Consolidar:
+
+- generic_validations.py
+- business_rules.py
+
+Reduciendo:
+
+- lógica duplicada
+- validaciones repetidas
+- código específico difícil de reutilizar
+
+### Testing e integración
+
+#### Validación integral
+
+Ejecutar pruebas sobre:
+
+- datasets contables
+- datasets de inventario
+- datasets de manufactura
+
+Verificando:
+
+- validaciones
+- exportaciones
+- estabilidad del pipeline
 
 ### Resultado esperado
 
-Pipeline reusable estable ejecutándose correctamente sobre datasets heterogéneos.
-
----
+Pipeline reusable estable ejecutándose correctamente sobre datasets heterogéneos y preparado para iniciar consolidación avanzada por dominio.
 
 ## Semana 9–10 — Consolidación avanzada del dominio financiero
 
 ### Objetivo real
 
-Profundizar las validaciones financieras y estabilizar completamente el dominio contable antes de iniciar Gold Layer.
+Profundizar las validaciones financieras y estabilizar completamente el dominio contable antes de iniciar la construcción formal de la Gold Layer.
 
 ### Prioridad principal
 
-#### Accounting
+#### Fortalecimiento del dominio Accounting
 
-Implementación avanzada de:
+Implementar validaciones más robustas sobre:
 
-- validaciones contables más profundas
-- validación de cuentas obligatorias
-- validación de movimientos relacionados
-- detección de inconsistencias financieras
-- trazabilidad de errores contables
-- validación de integridad financiera
+- cuentas contables
+- movimientos financieros
+- integridad de registros
+- consistencia estructural
+- calidad del dato financiero
 
-### Limpieza financiera avanzada
+#### Reglas financieras avanzadas
+
+Incorporar validaciones como:
+
+- cuentas obligatorias
+- movimientos inconsistentes
+- registros incompletos
+- detección de anomalías financieras
+- validaciones cruzadas básicas
+
+### Calidad y confiabilidad del dato
+
+#### Limpieza financiera avanzada
+
+Implementar:
 
 - normalización de cuentas contables
-- manejo de registros huérfanos
-- validación avanzada de fechas
 - control de registros duplicados
-- consolidación de formatos financieros
+- validación avanzada de fechas
+- validación de campos obligatorios
+- estandarización de formatos financieros
+
+#### Trazabilidad
+
+Fortalecer:
+
+- logging financiero
+- identificación de errores
+- monitoreo de validaciones
+- auditoría básica de ejecución
 
 ### Robustez del pipeline
 
-- ampliación de testing financiero
-- estabilización de exportaciones
-- pruebas sobre datasets completos
-- validaciones cruzadas básicas
+#### Testing financiero
+
+Ampliar cobertura mediante:
+
+- datasets más grandes
+- escenarios de error financiero
+- validaciones cruzadas
+- pruebas de integración
+
+#### Estabilidad operativa
+
+Validar:
+
+- ejecución continua del pipeline
+- comportamiento ante errores críticos
+- comportamiento ante warnings
+- consistencia de exportaciones
 
 ### Resultado esperado
 
-Dominio financiero suficientemente sólido y estable para iniciar construcción analítica real.
+Dominio financiero suficientemente sólido, confiable y estable para soportar procesos analíticos y futuras capas de consumo BI.
 
 ---
 
-## Semana 11–12 — Consolidación de inventory y manufacturing
+## Semana 11–12 — Consolidación de Inventory y Manufacturing
 
 ### Objetivo real
 
-Preparar datasets operativos suficientemente limpios y consistentes para integrarlos correctamente a Gold Layer.
+Preparar datasets operativos suficientemente limpios y consistentes para integrarlos correctamente a futuras capas analíticas.
 
-### Inventory
+### Prioridad principal
 
-Implementación de:
+#### Dominio Inventory
+
+Implementar:
 
 - validación de cantidades
 - consistencia de referencias
-- movimientos entre bodegas
-- limpieza de productos inconsistentes
-- validación de fechas operativas
-- detección de registros anómalos
+- control de valores nulos
+- detección de registros duplicados
+- normalización de productos
 
-### Manufacturing
+#### Calidad operativa
 
-Implementación de:
+Validar:
+
+- entradas y salidas
+- movimientos entre ubicaciones
+- registros incompletos
+- formatos inconsistentes
+
+### Dominio Manufacturing
+
+#### Limpieza operacional
+
+Implementar:
 
 - validación de órdenes
 - limpieza de estados
-- validación de cantidades producidas
+- normalización de campos operativos
 - detección de registros incompletos
-- consolidación operativa básica
+
+#### Consistencia de producción
+
+Validar:
+
+- cantidades producidas
+- fechas operativas
+- estados inconsistentes
+- registros duplicados
+
+### Reutilización del framework de validaciones
+
+#### Aplicación de reglas genéricas
+
+Extender:
+
+- validate_required_columns()
+- validate_dates()
+- validate_duplicates()
+- validaciones de tipos
+
+a:
+
+- inventory
+- manufacturing
+
+### Testing
+
+#### Cobertura operativa
+
+Implementar:
+
+- datasets de inventario
+- datasets de manufactura
+- pruebas de validaciones específicas
+- pruebas de integración
 
 ### Resultado esperado
 
-Datasets operativos suficientemente estables para análisis y consolidación analítica.
+Datasets operativos suficientemente estables para iniciar procesos analíticos y consolidación posterior en Gold Layer.
 
 ---
 
@@ -664,288 +1017,561 @@ Datasets operativos suficientemente estables para análisis y consolidación ana
 
 ### Objetivo real
 
-Construir datasets analíticos limpios, estables y realmente consumibles para BI y SQL.
+Construir datasets analíticos limpios, consistentes y consumibles para SQL y Business Intelligence.
+
+### Prioridad principal
+
+#### Diseño de Gold Layer
+
+Crear:
+
+- data/gold/
+- estructura de exportación analítica
+- datasets agregados
+- primeras métricas consolidadas
 
 ### Datasets prioritarios
 
-#### `financial_summary`
+#### financial_summary
 
 Debe incluir:
 
 - movimientos contables limpios
 - agregaciones por período
-- cuentas contables
-- débitos/créditos
-- balances
-- métricas financieras básicas
+- débitos y créditos
+- balances básicos
+- métricas financieras iniciales
 
-#### `inventory_summary`
+#### inventory_summary
 
 Debe incluir:
 
 - movimientos por producto
-- entradas/salidas
-- movimientos entre bodegas
+- entradas y salidas
 - cantidades consolidadas
+- comportamiento operativo básico
 
-#### `production_summary`
+#### production_summary
 
 Debe incluir:
 
 - órdenes por estado
 - cantidades producidas
-- actividad operativa básica
+- actividad operacional consolidada
 
 ### Construcción técnica
 
-Implementación de:
+#### Exportación
 
-- `data/gold/`
-- `src/gold/exporter.py`
+Implementar:
 
-Exportación en:
+- exportación Parquet
+- exportación CSV
+- control de versiones básicas de datasets
 
-- Parquet
-- CSV
+#### Validaciones analíticas
 
-### Validaciones analíticas
+Verificar:
 
 - consistencia entre Silver y Gold
-- validación de balances
 - integridad de métricas
-- validación de agregaciones
+- calidad de agregaciones
+- ausencia de registros inconsistentes
+
+### Preparación para BI
+
+#### Consumo analítico
+
+Diseñar datasets pensando en:
+
+- SQL
+- Power BI
+- reporting financiero
+- análisis operativo
 
 ### Resultado esperado
 
-Primer entorno Gold reusable listo para SQL y Power BI.
+Primera versión funcional de la Gold Layer lista para consumo analítico.
 
 ---
 
-## Semana 15–16 — SQL analítico financiero (Parte 1)
+## Semana 15–16 — SQL Analítico Financiero (Parte 1)
 
 ### Objetivo real
 
-Comenzar consumo analítico real sobre datasets Gold utilizando SQL financiero.
+Comenzar el consumo analítico real de los datasets Gold mediante SQL, construyendo consultas financieras orientadas a reporting y análisis de negocio.
 
-### Prioridad absoluta
+### Prioridad principal
 
-#### `financial_summary`
+#### Dominio financiero
 
-Implementación de:
+Implementar consultas sobre:
 
-- agregaciones
-- `GROUP BY`
-- joins
-- filtros analíticos
-- validaciones cruzadas
-- métricas financieras iniciales
+- financial_summary
+- métricas financieras básicas
+- balances consolidados
+- movimientos contables
 
-### KPIs financieros iniciales
+### SQL fundamental
+
+#### Consultas analíticas
+
+Implementar:
+
+- SELECT
+- WHERE
+- GROUP BY
+- ORDER BY
+- HAVING
+- JOIN básicos
+
+### Métricas financieras iniciales
+
+#### Indicadores básicos
+
+Construir consultas para:
 
 - total débitos
 - total créditos
 - movimientos por período
-- cuentas más utilizadas
+- movimientos por cuenta
 - variaciones mensuales básicas
-
-### Resultado esperado
-
-Primer entorno SQL funcional orientado a análisis financiero.
-
----
-
-## Semana 17–18 — SQL analítico financiero (Parte 2)
-
-### Objetivo real
-
-Profundizar SQL analítico y comenzar construcción formal de KPIs financieros reutilizables.
-
-### SQL intermedio/avanzado
-
-Implementación de:
-
-- CTEs
-- subqueries
-- window functions
-- acumulados
-- rankings financieros
-- análisis temporales
 
 ### Validaciones analíticas
 
-- integridad financiera
-- validación de balances
-- consistencia entre datasets
-- validación de métricas agregadas
+#### Consistencia financiera
+
+Verificar:
+
+- integridad de balances
+- consistencia de agregaciones
+- coherencia entre Gold y resultados SQL
+
+### Documentación
+
+#### Repositorio SQL
+
+Organizar:
+
+- scripts SQL
+- consultas reutilizables
+- documentación de métricas
 
 ### Resultado esperado
 
-Modelo SQL más sólido y orientado a Finance BI.
+Primer entorno SQL funcional orientado a análisis financiero y consumo analítico.
 
 ---
 
-## Semana 19–20 — Construcción de KPIs financieros y operativos
+## Semana 17–18 — SQL Analítico Financiero (Parte 2)
 
 ### Objetivo real
 
-Transformar datasets Gold en métricas financieras y operativas reutilizables.
+Profundizar el análisis financiero mediante SQL intermedio y comenzar la construcción de métricas reutilizables para Business Intelligence.
+
+### SQL intermedio
+
+#### Consultas avanzadas
+
+Implementar:
+
+- CTEs
+- subqueries
+- CASE WHEN
+- funciones agregadas avanzadas
+- validaciones cruzadas
+
+### SQL avanzado
+
+#### Análisis temporal
+
+Implementar:
+
+- acumulados
+- comparativos mensuales
+- tendencias
+- análisis por períodos
+
+#### Window Functions
+
+Explorar:
+
+- ROW_NUMBER()
+- RANK()
+- DENSE_RANK()
+- SUM() OVER()
+- AVG() OVER()
+
+### Métricas financieras reutilizables
+
+#### Indicadores analíticos
+
+Construir:
+
+- tendencias de movimientos
+- evolución mensual
+- comportamiento de cuentas
+- análisis comparativos
+
+### Calidad analítica
+
+#### Validaciones
+
+Verificar:
+
+- consistencia de métricas
+- integridad de agregaciones
+- calidad de resultados
+
+### Resultado esperado
+
+Modelo SQL más robusto y preparado para alimentar futuros dashboards financieros.
+
+---
+
+## Semana 19–20 — Construcción de KPIs Financieros y Operativos
+
+### Objetivo real
+
+Transformar datasets Gold y consultas SQL en indicadores reutilizables para análisis financiero y operacional.
 
 ### KPIs financieros
 
 #### Accounting
 
+Construir indicadores como:
+
 - crecimiento mensual
-- variaciones contables
+- variaciones financieras
+- comportamiento por cuenta
+- distribución de movimientos
 - tendencias financieras
-- comportamiento operativo
-- movimientos relevantes
+
+### KPIs operativos
 
 #### Inventory
 
-- rotación
-- movimientos
+Construir indicadores como:
+
+- movimientos por producto
+- rotación básica
 - referencias más utilizadas
+- comportamiento de inventario
 
 #### Manufacturing
+
+Construir indicadores como:
 
 - órdenes procesadas
 - estados operativos
 - cantidades producidas
+- actividad operacional
+
+### Estandarización
+
+#### Catálogo de KPIs
+
+Documentar:
+
+- definición
+- fórmula
+- origen de datos
+- frecuencia de actualización
+
+### Validaciones
+
+#### Consistencia de indicadores
+
+Verificar:
+
+- integridad de cálculos
+- consistencia entre SQL y Gold
+- calidad de métricas
 
 ### Resultado esperado
 
-KPIs financieros y operativos listos para consumo BI.
+KPIs financieros y operativos listos para consumo analítico y Business Intelligence.
 
 ---
 
-## Semana 21–22 — Construcción inicial de dashboards en Power BI
+## Semana 21–22 — Construcción Inicial de Dashboards en Power BI
 
 ### Objetivo real
 
-Conectar datasets Gold y KPIs a Power BI para construir las primeras visualizaciones financieras reales.
+Conectar datasets Gold y KPIs a Power BI para construir las primeras visualizaciones analíticas del proyecto.
 
-### Dashboards prioritarios
+### Prioridad principal
+
+#### Conexión de datos
+
+Integrar:
+
+- financial_summary
+- inventory_summary
+- production_summary
+- KPIs construidos previamente
+
+### Dashboard financiero
 
 #### Finanzas
 
+Implementar visualizaciones para:
+
 - balances
-- movimientos
+- movimientos financieros
 - tendencias
-- variaciones
+- variaciones mensuales
 - KPIs financieros
+
+### Dashboard operativo
 
 #### Inventario
 
-- entradas/salidas
-- movimientos
-- referencias
+Implementar visualizaciones para:
+
+- entradas y salidas
+- movimientos de productos
+- comportamiento operativo
 
 #### Producción
 
+Implementar visualizaciones para:
+
 - órdenes
-- estados
-- actividad operativa
+- estados operativos
+- actividad de manufactura
+
+### Modelado básico
+
+#### Power BI
+
+Implementar:
+
+- relaciones básicas
+- medidas iniciales
+- segmentadores
+- filtros
 
 ### Resultado esperado
 
-Primer entorno BI funcional conectado directamente al pipeline.
+Primer entorno BI funcional conectado directamente a los datasets analíticos del proyecto.
 
 ---
 
-## Semana 23–24 — Consolidación analítica y validación BI
+## Semana 23–24 — Consolidación Analítica y Validación BI
 
 ### Objetivo real
 
-Validar consistencia entre SQL, KPIs y dashboards antes de profesionalizar el proyecto.
+Validar la consistencia entre datasets Gold, consultas SQL, KPIs y dashboards para garantizar información confiable y útil para análisis financiero y operativo.
 
-### Prioridades
+### Prioridad principal
 
-- validación de métricas visuales
-- consistencia entre SQL y Power BI
-- validación de KPIs
-- revisión de filtros y agregaciones
-- estabilización de dashboards
+#### Validación de métricas
+
+Verificar:
+
+- consistencia de KPIs
+- integridad de agregaciones
+- coherencia entre SQL y Power BI
+- estabilidad de cálculos
+
+### Calidad analítica
+
+#### Validaciones funcionales
+
+Revisar:
+
+- filtros
+- segmentadores
+- medidas
+- relaciones
+- tablas de soporte
+
+#### Consistencia de resultados
+
+Comparar:
+
+- resultados SQL
+- datasets Gold
+- visualizaciones Power BI
+- métricas calculadas
+
+### Optimización analítica
+
+#### Mejoras de usabilidad
+
+Implementar:
+
+- nombres más descriptivos
+- organización visual
+- navegación más intuitiva
+- documentación básica de dashboards
+
+### Validación financiera
+
+#### Dominio Accounting
+
+Confirmar:
+
+- balances consistentes
+- métricas correctas
+- movimientos consolidados
+- trazabilidad de cifras
 
 ### Resultado esperado
 
-Entorno BI estable y consistente.
+Entorno BI estable, consistente y preparado para presentación profesional.
 
 ---
 
-## Semana 25–26 — Consolidación arquitectónica y optimización
+## Semana 25–26 — Consolidación Arquitectónica y Optimización
 
 ### Objetivo real
 
-Reducir redundancia, mejorar mantenibilidad y estabilizar completamente la arquitectura reusable.
+Reducir redundancia, mejorar mantenibilidad y estabilizar completamente la arquitectura reusable del proyecto.
 
-### Prioridades
+### Prioridad principal
 
 #### Refactorización general
 
-- revisión completa del pipeline
-- eliminación de lógica duplicada
-- unificación de reglas similares
-- simplificación de transformaciones
+Revisar:
 
-#### Optimización técnica
+- módulos existentes
+- funciones duplicadas
+- lógica repetida
+- dependencias innecesarias
 
-- optimización de validaciones
-- mejora de performance sobre datasets grandes
-- reducción de operaciones innecesarias
-- mejora de trazabilidad
+### Optimización técnica
 
-#### Consolidación reusable
+#### Pipeline ETL
 
-Centralización de lógica común en:
+Mejorar:
 
-- `cleaning.py`
-- `general_quality.py`
-- `business_rules.py`
-- helpers reutilizables
+- rendimiento de transformaciones
+- eficiencia de validaciones
+- reutilización de componentes
+- trazabilidad del flujo
+
+### Consolidación de código
+
+#### Centralización
+
+Fortalecer:
+
+- generic_validations.py
+- business_rules.py
+- cleaning.py
+- utilidades compartidas
+
+#### Organización del proyecto
+
+Asegurar:
+
+- separación de responsabilidades
+- consistencia de estructura
+- facilidad de mantenimiento
+
+### Calidad técnica
+
+#### Testing
+
+Ampliar:
+
+- cobertura de pruebas
+- escenarios de integración
+- pruebas sobre datasets completos
 
 ### Resultado esperado
 
-Pipeline financiero robusto, mantenible y profesional.
+Pipeline financiero robusto, mantenible y preparado para crecimiento futuro.
 
 ---
 
-## Semana 27–28 — Storytelling técnico y profesionalización del proyecto
+## Semana 27–28 — Storytelling Técnico y Profesionalización del Proyecto
 
 ### Objetivo real
 
-Convertir el proyecto completo en un caso de estudio sólido para Finance BI y Financial Data Analytics.
+Convertir el proyecto completo en un caso de estudio sólido para Financial Data Analytics, Business Intelligence y analítica financiera.
 
-### Implementaciones
+### Documentación profesional
 
-#### README profesional
+#### README avanzado
 
-Documentación de:
+Documentar:
 
 - arquitectura Medallion
 - flujo ETL
 - validaciones financieras
-- datasets Gold
-- KPIs
-- dashboards
-- ejemplos de ejecución
+- Silver Layer
+- Gold Layer
+- SQL analítico
+- Power BI
 
-#### Storytelling financiero
+### Storytelling del proyecto
 
-- hallazgos relevantes
+#### Evolución profesional
+
+Explicar:
+
+- punto de partida
+- problemas encontrados
+- decisiones tomadas
+- aprendizajes obtenidos
+- evolución técnica del proyecto
+
+### Caso de negocio
+
+#### Valor analítico
+
+Destacar:
+
+- calidad del dato
+- confiabilidad de información financiera
+- reducción de reprocesos
+- preparación para análisis y reporting
+
+### Portafolio profesional
+
+#### Material visual
+
+Preparar:
+
+- capturas de código
+- capturas de pruebas automatizadas
+- capturas de Power BI
+- diagramas de arquitectura
+- diagramas del flujo ETL
+
+### Preparación para entrevistas
+
+#### Narrativa profesional
+
+Construir explicación clara sobre:
+
+- arquitectura implementada
+- validaciones desarrolladas
 - decisiones técnicas
-- problemas detectados
 - impacto analítico
-- evolución del pipeline
+- aplicación al contexto financiero
 
-#### Preparación profesional
+### Optimización de presencia profesional
 
-- screenshots
-- diagramas
-- explicación técnica
-- explicación funcional
-- narrativa para entrevistas
-- optimización GitHub y LinkedIn
+#### GitHub y LinkedIn
+
+Actualizar:
+
+- README final
+- documentación del proyecto
+- publicaciones de seguimiento
+- evidencias de avance
+- descripción profesional del proyecto
 
 ### Resultado esperado
 
-Proyecto completamente documentado, explicable y listo para portafolio profesional.
+Proyecto completamente documentado, explicable, demostrable y listo para utilizarse como pieza principal de portafolio para posiciones de:
+
+- Financial Data Analyst
+- Financial BI Analyst
+- Business Intelligence Analyst
+- Data Analyst enfocado en finanzas
+- Reporting & Insights Analyst

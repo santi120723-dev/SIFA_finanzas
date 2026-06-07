@@ -3,15 +3,18 @@ import re
 import pandas as pd
 
 from src.logger import logger
+from src.transformations.accounting_cleaning import (
+    clean_accounting_records,
+)
 
 
 def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Normalize column names:
-    - strip whitespace
-    - convert to lowercase
-    - replace spaces with '_'
-    - remove special characters
+    Normalizar los nombres de las columnas:
+    * eliminar espacios al inicio y al final
+    * convertir a minúsculas
+    * reemplazar espacios por "_"
+    * eliminar caracteres especiales
     """
 
     logger.info("Normalizando nombres de columnas...")
@@ -25,6 +28,13 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.rename(columns=_norm)
 
+    column_mapping = {
+        "nombre_de_la_cuenta": "cuenta",
+        "fecha_de_factura": "fecha",
+    }
+
+    df = df.rename(columns=column_mapping)
+
     logger.info("Nombres de columnas normalizados.")
 
     return df
@@ -32,9 +42,7 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
 
 def clean_strings(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Clean string (object) columns:
-    - strip leading/trailing whitespace
-    - preserve null values
+    Limpia columnas tipo texto.
     """
 
     logger.info("Limpiando columnas de tipo string...")
@@ -43,7 +51,9 @@ def clean_strings(df: pd.DataFrame) -> pd.DataFrame:
 
     for col in str_cols:
         df[col] = df[col].apply(
-            lambda x: x.strip() if isinstance(x, str) else x
+            lambda x: x.strip()
+            if isinstance(x, str)
+            else x
         )
 
     logger.info("Columnas de tipo string limpiadas.")
@@ -53,11 +63,7 @@ def clean_strings(df: pd.DataFrame) -> pd.DataFrame:
 
 def handle_nulls(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Standardize common null representations to pandas NA:
-    - empty string
-    - 'null'
-    - 'n/a'
-    - 'none'
+    Estandariza valores nulos.
     """
 
     logger.info("Estandarizando valores nulos...")
@@ -107,6 +113,9 @@ def clean_dataframe(
     df = clean_strings(df)
 
     df = handle_nulls(df)
+
+    if file_type == "libro_mayor":
+        df = clean_accounting_records(df)
 
     logger.info(
         f"Limpieza genérica completada. "

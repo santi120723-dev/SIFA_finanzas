@@ -318,5 +318,6 @@ SIFA_finanzas/
 - Añadir pruebas end-to-end automatizadas.
 - Incrementar cobertura de reglas de negocio.
 
+
 #### Caso de Uso
 Simulación de pipeline financiero orientado a Business Intelligence y análisis contable sobre datasets reales. El proyecto busca representar escenarios comunes de integración ETL financiera, calidad de datos y preparación analítica para reporting empresarial.
