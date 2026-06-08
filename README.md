@@ -1,31 +1,76 @@
 # SIFA_finanzas-Pipeline_ETL_para_Finanzas_(Python+Pandas)
 
 ## Resumen Ejecutivo
-Este proyecto implementa un pipeline ETL modular orientado a datos financieros reales utilizando Python y Pandas. El sistema procesa libros mayores heterogéneos mediante una arquitectura Medallion (Bronze → Silver → Gold), incorporando validaciones contables, limpieza reusable, logging centralizado y pruebas end-to-end sobre datasets reales.
 
-Durante esta etapa el proyecto evolucionó desde una estructura inicial de ingesta hacia un pipeline más desacoplado y preparado para escenarios reales de integración ETL y Business Intelligence financiero.
+Este proyecto implementa un pipeline ETL modular orientado a datos financieros reales utilizando Python y Pandas. El sistema procesa libros mayores heterogéneos mediante una arquitectura Medallion (Bronze → Silver → Gold), incorporando validaciones contables, limpieza reusable, logging centralizado, pruebas automatizadas, control de calidad de datos y trazabilidad de validaciones.
+
+Durante las primeras etapas del proyecto se construyó una base robusta para la preparación y validación de información financiera, integrando reglas de negocio contables, validaciones estructurales, validaciones de calidad del dato y pruebas automatizadas sobre datasets reales.
+
+Actualmente el proyecto cuenta con un flujo funcional:
+
+Bronze → Load → Clean → Validate → Export Silver
+
+preparado para soportar futuras capas analíticas, SQL financiero y Business Intelligence.
 
 ---
 
 ## Descripción
+
 Proyecto enfocado en transformar datasets contables inconsistentes en información estructurada, validada y reutilizable para futuros procesos analíticos y dashboards financieros.
 
 Actualmente incluye:
 
-- Pipeline ETL modular:
-Separación clara entre ingestión, limpieza, validación y preparación analítica.
+### Pipeline ETL modular
 
-- Arquitectura Medallion:
-Organización de datasets en capas Bronze, Silver y preparación inicial de Gold.
+Separación clara entre:
 
-- Validaciones financieras:
-Implementación de reglas básicas de integridad contable como validación Debe = Haber.
+* ingestión
+* limpieza
+* validación
+* exportación Silver
+* preparación analítica
 
-- Limpieza reusable:
-Funciones desacopladas para normalización de columnas, manejo de nulos y estandarización estructural.
+### Arquitectura Medallion
 
-- Testing e integración:
-Pruebas sobre datasets financieros reales utilizando notebooks y testing automatizado con pytest.
+Organización de datasets en:
+
+* Bronze
+* Silver
+* Gold (preparación inicial)
+
+### Validaciones financieras y de calidad
+
+Implementación de validaciones críticas y advertencias para detectar:
+
+* errores estructurales
+* inconsistencias contables
+* tipos de datos incorrectos
+* valores fuera de rango
+* registros duplicados
+* datasets vacíos
+
+### Limpieza reusable
+
+Funciones desacopladas para:
+
+* normalización de columnas
+* manejo de nulos
+* limpieza de strings
+* enriquecimiento financiero
+* preparación de datasets reutilizables
+
+### Testing automatizado
+
+Cobertura mediante pytest para:
+
+* ingestión
+* limpieza financiera
+* validaciones contables
+* validaciones genéricas
+* validaciones de calidad
+* validaciones de jerarquía contable
+* integración del pipeline
+* observabilidad de validaciones
 
 ---
 
@@ -34,290 +79,595 @@ Pruebas sobre datasets financieros reales utilizando notebooks y testing automat
 ### Implementado (Funcional)
 
 #### Arquitectura Medallion
-- Directorios definidos:
-  - data/bronze/
-  - data/silver/
-  - data/gold/
 
-- Separación por dominios:
-  - accounting/
-  - inventory/
-  - manufacturing/
+* Directorios definidos:
 
-- Configuración centralizada mediante `src/config.py`.
+  * data/bronze/
+  * data/silver/
+  * data/gold/
 
-- Uso de `pathlib.Path` para manejo robusto de rutas.
+* Separación por dominios:
+
+  * accounting/
+  * inventory/
+  * manufacturing/
+
+* Configuración centralizada mediante `src/config.py`
+
+* Uso de `pathlib.Path` para manejo robusto de rutas
 
 ---
 
 #### Capa Bronze (Ingestion)
 
 ##### Funcionalidades implementadas
-- `load_file()` en `src/ingestion/extract.py`
-- Lectura de archivos:
-  - `.xlsx`
-  - `.csv`
-  - `.txt`
+
+Archivo:
+
+`src/ingestion/extract.py`
+
+Implementado:
+
+* `load_file()`
+* `load_libro_mayor()`
+* `load_movimientos_inventario()`
+* `load_ordenes_fabricacion()`
 
 ##### Validaciones iniciales
-- Archivo existente.
-- Formato soportado.
-- DataFrame no vacío.
-- Logging automático de errores.
 
-##### Mejoras implementadas
-- Integración correcta desde notebooks.
-- Compatibilidad con rutas absolutas.
-- Eliminación de hardcoding de rutas.
+* archivo existente
+* formato soportado
+* DataFrame no vacío
+* logging automático de errores
+
+##### Testing
+
+* carga correcta de CSV
+* carga correcta de Excel
+* archivo inexistente
+* formato inválido
 
 ---
 
-#### Capa Silver (Transformación y limpieza)
+#### Capa Silver (Transformación y Limpieza)
 
-##### Limpieza reusable implementada
+##### Limpieza reusable
+
 Archivo:
+
 `src/utils/cleaning.py`
 
-Funciones actuales:
-- normalización de nombres de columnas
-- limpieza de strings
-- manejo de valores nulos
-- estandarización estructural
-- preparación reusable de DataFrames financieros
+Funciones implementadas:
 
-##### Normalización financiera
+* normalize_column_names()
+* clean_strings()
+* handle_nulls()
+* clean_dataframe()
+
+##### Transformaciones financieras
+
 Archivo:
-`src/preprocess/normalizer.py`
 
-- `normalize_libro_mayor()`
-- integración desacoplada de reglas de transformación
-- preparación estructural previa a validaciones
+`src/transformations/accounting_cleaning.py`
+
+Implementado:
+
+* detección automática de cuentas
+* forward fill de cuentas contables
+* detección de balances iniciales
+* corrección de fechas
+* eliminación de filas de totales
+* eliminación de cabeceras intermedias
+* cálculo de valor_movimiento
+* construcción de jerarquía PUC
+* construcción de calendario financiero
 
 ---
 
-#### Validaciones financieras
+#### Enriquecimiento Financiero
 
-Archivo:
-`src/validations/business_rules.py`
+Implementado:
 
-##### Implementado
-- `validate_debe_haber()`
+* valor_movimiento = debe - haber
 
-##### Funcionalidad
-- Validación de integridad contable:
-  - suma Debe ≈ suma Haber
-- manejo de tolerancia configurable
-- manejo explícito de errores
-- logging de diferencias detectadas
+Objetivo:
 
-##### Validaciones estructurales
-- columnas requeridas
-- datasets incompletos
-- errores de integración ETL
+* facilitar análisis financieros posteriores
+* preparar indicadores financieros
+* soportar reportería financiera
 
 ---
 
-#### Logging y trazabilidad
+#### Jerarquía Contable PUC
+
+Implementado:
+
+* clase
+* grupo
+* cuenta_puc
+* subcuenta
+
+Objetivo:
+
+* soportar agregaciones financieras
+* facilitar análisis por niveles contables
+* preparar datasets analíticos
+
+---
+
+#### Calendario Financiero
+
+Implementado:
+
+* anio
+* mes
+* trimestre
+* periodo_contable
+
+Objetivo:
+
+* análisis temporal
+* reportería financiera
+* Business Intelligence
+
+---
+
+#### Exportación Silver
 
 Archivo:
+
+`src/utils/export_silver.py`
+
+Implementado:
+
+* exportación Parquet
+* creación automática de directorios
+* persistencia en Silver Layer
+* trazabilidad mediante logging
+
+Resultado:
+
+* generación automática de datasets listos para análisis
+
+---
+
+#### Pipeline ETL Integrado
+
+Archivo:
+
+`src/orchestration/run_pipeline.py`
+
+Flujo implementado:
+
+Bronze
+
+↓
+
+Load
+
+↓
+
+Clean
+
+↓
+
+Validate
+
+↓
+
+Export Silver
+
+Funcionalidades:
+
+* integración de módulos ETL
+* ejecución desacoplada
+* validaciones automáticas
+* exportación automática a Silver
+* trazabilidad de ejecución
+
+Resultado:
+
+* pipeline reutilizable para datasets financieros
+
+---
+
+#### Sistema de Validaciones
+
+Carpeta:
+
+`src/validations/`
+
+##### Componentes implementados
+
+* severity.py
+* generic_validations.py
+* business_rules.py
+* accounting_validations.py
+* warning_validations.py
+* data_type_validations.py
+* value_range_validations.py
+* account_hierarchy_validations.py
+* validation_summary.py
+* validation_runner.py
+
+---
+
+#### Severidades implementadas
+
+Actualmente el pipeline diferencia formalmente entre:
+
+##### CRITICAL
+
+Errores que deben detener la ejecución del pipeline.
+
+##### WARNING
+
+Situaciones que no detienen la ejecución pero requieren monitoreo y seguimiento.
+
+Implementado mediante:
+
+* severity.py
+* validation_runner.py
+
+Objetivo:
+
+* mejorar control operativo
+* separar errores críticos de alertas de calidad
+* facilitar monitoreo de datos financieros
+
+---
+
+#### Validaciones Críticas
+
+Actualmente el pipeline ejecuta:
+
+* validate_required_columns()
+* validate_dates()
+* validate_debe_haber()
+* validate_codigo_cuenta()
+* validate_nombre_cuenta()
+* validate_fecha_datetime()
+* validate_puc_structure()
+* validate_valor_movimiento()
+* validate_data_types()
+* validate_value_ranges()
+
+Objetivo:
+
+* garantizar integridad financiera
+* detectar errores estructurales
+* prevenir inconsistencias antes de exportar a Silver
+
+---
+
+#### Validaciones WARNING
+
+Actualmente el pipeline ejecuta:
+
+* validate_nulls()
+* validate_empty_dataframe()
+* validate_duplicates()
+
+Objetivo:
+
+* monitorear calidad del dato
+* detectar posibles anomalías
+* mejorar trazabilidad y seguimiento
+
+---
+
+#### Validación de Jerarquía Contable
+
+Archivo:
+
+`src/validations/account_hierarchy_validations.py`
+
+Implementado:
+
+* validate_account_hierarchy_consistency()
+
+Validaciones incluidas:
+
+* coherencia entre clase y código de cuenta
+* coherencia entre grupo y clase
+* coherencia entre cuenta_puc y grupo
+* coherencia entre subcuenta y cuenta_puc
+
+Objetivo:
+
+* detectar inconsistencias estructurales dentro de la jerarquía PUC
+* proteger reportería financiera
+* mejorar consistencia contable
+
+---
+
+#### Validation Runner
+
+Implementado mediante:
+
+`run_validations()`
+
+Funcionalidades:
+
+* ejecución centralizada
+* clasificación por severidad
+* retorno estructurado de resultados
+* integración con logging
+* integración con pipeline ETL
+
+Resultado:
+
+* validaciones reutilizables y desacopladas
+
+---
+
+#### Resumen Consolidado de Validaciones
+
+Archivo:
+
+`src/validations/validation_summary.py`
+
+Implementado:
+
+* generación de resumen consolidado
+* conteo por severidad
+* consolidación de errores
+* consolidación de advertencias
+
+Objetivo:
+
+* mejorar observabilidad
+* mejorar monitoreo
+* facilitar análisis de calidad del dato
+
+Resultado:
+
+* mayor trazabilidad de la ejecución de validaciones
+
+---
+
+#### Calidad del Dato y Observabilidad
+
+Actualmente la Silver Layer incorpora controles para:
+
+* integridad contable
+* consistencia estructural
+* calidad de datos
+* trazabilidad de validaciones
+* monitoreo de advertencias
+* prevención de errores silenciosos
+
+Beneficios:
+
+* reducción de riesgos en reportería financiera
+* mayor confiabilidad analítica
+* mejor preparación para Business Intelligence
+
+---
+
+#### Logging y Trazabilidad
+
+Archivo:
+
 `src/logger.py`
 
-##### Implementado
-- logging centralizado
-- salida en:
-  - consola
-  - `logs/pipeline.log`
-- timestamps automáticos
-- registro de:
-  - errores
-  - warnings
-  - ejecución del pipeline
-  - métricas de procesamiento
+Implementado:
+
+* logging centralizado
+* salida en consola
+* generación de logs persistentes
+* registro de errores
+* registro de warnings
+* trazabilidad de validaciones
+* seguimiento de ejecución del pipeline
+
+Archivo de salida:
+
+`logs/pipeline.log`
+
+Objetivo:
+
+* facilitar debugging
+* mejorar monitoreo operativo
+* fortalecer trazabilidad de ejecución
 
 ---
 
-#### Testing
+#### Testing Automatizado
 
-##### Pytest
 Carpeta:
+
 `tests/`
 
-##### Cobertura actual
-- carga de archivos
-- formatos inválidos
-- archivos vacíos
-- validaciones contables
-- pruebas de integración iniciales
+Cobertura actual:
 
-##### Fixtures de testing
-- bronze_test.csv
-- bronze_test.xlsx
-- bronze_test_missing.xlsx
+##### Ingestión
 
----
+* carga CSV
+* carga Excel
+* formatos inválidos
+* archivos inexistentes
 
-#### Integración Notebook + ETL
+##### Limpieza financiera
 
-##### Implementado
-- notebooks integrados al pipeline
-- ejecución end-to-end:
-  - Bronze → Normalize → Validate
+* forward fill
+* balances iniciales
+* eliminación de totales
+* jerarquía PUC
+* calendario financiero
 
-##### Problemas resueltos
-- `ModuleNotFoundError: No module named 'src'`
-- manejo incorrecto de rutas relativas
-- conflictos entre `str` y `Path`
-- diferencias estructurales entre archivos Excel
+##### Validaciones contables
 
----
+* código de cuenta
+* nombre de cuenta
+* fecha
+* estructura PUC
+* valor_movimiento
+* debe/haber
 
-### En desarrollo (Sin implementar completamente)
+##### Calidad de datos
 
-#### Capa Gold
+* tipos de datos
+* rangos permitidos
+* nulos
+* duplicados
+* datasets vacíos
 
-##### Parcialmente preparada
-- estructura `data/gold/`
-- preparación para:
-  - KPIs financieros
-  - reporting
-  - datasets analíticos
+##### Jerarquía contable
 
-##### Pendiente
-- exportación definitiva a Parquet/CSV
-- modelo dimensional
-- tablas analíticas
-- métricas financieras
+* consistencia de clase
+* consistencia de grupo
+* consistencia de cuenta_puc
+* consistencia de subcuenta
 
----
+##### Observabilidad
 
-#### SQL analítico
+* resumen consolidado de validaciones
 
-##### Pendiente
-- consultas SQL financieras
-- agregaciones analíticas
-- construcción de KPIs
+##### Integración
 
----
+* pipeline completo Bronze → Silver
 
-#### Dashboards BI
+Resultado actual:
 
-##### Pendiente
-- Power BI
-- visualizaciones financieras
-- reporting ejecutivo
+* 50 pruebas automatizadas
+* 50 pruebas aprobadas
 
 ---
 
-## Tecnologías Utilizadas
+#### Datasets de Prueba
 
-### Core
-- Python 3.11.7
-- Pandas
-- Pathlib
-- Pytest
+Actualmente existen datasets de soporte para testing:
 
-### Herramientas
-- Git & GitHub
-- VS Code
-- Jupyter Notebook
-- Logging estándar de Python
+* bronze_test.csv
+* bronze_test.xlsx
+* critical_imbalanced.csv
+* critical_imbalanced2.csv
+* invalid_dates.csv
+* null_dates.csv
+* duplicates.csv
+* no_duplicates.csv
+* missing_columns.csv
+
+Objetivo:
+
+* reproducibilidad de pruebas
+* validación consistente del pipeline
+* simulación de escenarios reales
 
 ---
 
-## Estructura del Proyecto
+### Estado Actual de la Silver Layer
 
-```text
-SIFA_finanzas/
+La Silver Layer financiera cuenta actualmente con:
 
-│
-├── data/
-│   ├── bronze/
-│   │   ├── accounting/
-│   │   │   └── libro_mayor_2025.xlsx
-│   │   ├── inventory/
-│   │   └── manufacturing/
-│   │
-│   ├── silver/
-│   │   ├── accounting/
-│   │   ├── inventory/
-│   │   └── manufacturing/
-│   │
-│   └── gold/
-│       ├── finance/
-│       ├── management/
-│       └── operations/
-│
-├── logs/
-│   └── pipeline.log
-│
-├── notebooks/
-│   ├── 01_exploration.ipynb
-│   ├── 02_test_cleaning.ipynb
-│   └── 03_test_pipeline.ipynb
-│
-├── reports/
-│
-├── scripts/
-│   └── generate_dummy_data.py
-│
-├── sql/
-│   ├── silver/
-│   └── gold/
-│
-├── src/
-│   ├── config.py
-│   ├── logger.py
-│   │
-│   ├── ingestion/
-│   │   └── extract.py
-│   │
-│   ├── preprocess/
-│   │   └── normalizer.py
-│   │
-│   ├── transformations/
-│   │
-│   ├── validations/
-│   │   └── business_rules.py
-│   │
-│   ├── utils/
-│   │   └── cleaning.py
-│   │
-│   └── orchestration/
-│
-├── tests/
-│   ├── test_extract.py
-│   ├── test_validations.py
-│   └── test_cleaning.py
-│
-└── README.md
-```
+* pipeline ETL integrado
+* limpieza reusable
+* enriquecimiento financiero
+* jerarquía contable PUC
+* calendario financiero
+* validaciones críticas
+* validaciones warning
+* control de severidades
+* validación de jerarquía contable
+* resumen consolidado de validaciones
+* exportación automática a Parquet
+* logging centralizado
+* pruebas automatizadas
+* pruebas de integración end-to-end
 
-#### lecciones Aprendidas
-- La complejidad real de un pipeline ETL muchas veces aparece durante la integración entre módulos y no únicamente en la transformación de datos.
-- Los notebooks requieren manejo explícito de rutas y contexto del proyecto para integrarse correctamente con arquitecturas modulares.
-- La separación de responsabilidades facilita debugging, testing y escalabilidad.
-- La calidad de datos en pipelines financieros depende tanto de validaciones técnicas como de reglas contables.
-- El uso de logging y testing automatizado mejora considerablemente la trazabilidad y mantenibilidad del sistema.
+Flujo actual:
 
-#### Próximos Pasos
-* Finalizar la capa Silver
-- Consolidar reglas reutilizables de limpieza.
-- Mejorar validaciones estructurales.
-- Añadir validaciones financieras adicionales.
-* Desarrollar la capa Gold
-- Exportar datasets analíticos a Parquet.
-- Construir KPIs financieros.
-- Preparar datasets para BI y reporting.
-* Implementar SQL analítico
-- Crear consultas financieras reutilizables.
-- Construir agregaciones para análisis financiero.
-* Integración BI
-- Conectar Power BI a la capa Gold.
-- Diseñar dashboards financieros iniciales.
-* Mejorar testing
-- Añadir pruebas end-to-end automatizadas.
-- Incrementar cobertura de reglas de negocio.
+Bronze
 
+↓
 
-#### Caso de Uso
-Simulación de pipeline financiero orientado a Business Intelligence y análisis contable sobre datasets reales. El proyecto busca representar escenarios comunes de integración ETL financiera, calidad de datos y preparación analítica para reporting empresarial.
+Load
+
+↓
+
+Clean
+
+↓
+
+Validate
+
+↓
+
+Export Silver
+
+La capa Silver se encuentra consolidada y preparada para servir como base de futuros procesos analíticos, modelado de datos, SQL financiero y Business Intelligence.
+
+---
+
+### Tecnologías Utilizadas
+
+#### Core
+
+* Python 3.11.7
+* Pandas
+* Pathlib
+
+#### Calidad y Testing
+
+* Pytest
+* Validaciones CRITICAL/WARNING
+* Testing de integración
+* Testing de reglas contables
+* Testing de calidad del dato
+
+#### Herramientas
+
+* Git
+* GitHub
+* VS Code
+* Jupyter Notebook
+* Logging estándar de Python
+
+---
+
+### Lecciones Aprendidas
+
+* La calidad del dato debe validarse antes de cualquier proceso analítico.
+* Las reglas contables requieren respaldo mediante pruebas automatizadas para garantizar confiabilidad.
+* La separación entre validaciones críticas y advertencias mejora el control operativo del pipeline.
+* La observabilidad y trazabilidad son tan importantes como las transformaciones de datos.
+* La integración temprana de testing reduce significativamente el riesgo de errores silenciosos.
+* Una Silver Layer sólida simplifica la construcción posterior de modelos analíticos y dashboards financieros.
+
+---
+
+### Próximos Pasos
+
+#### Semana 7 — Gobierno de Datos y Dimensión de Terceros
+
+Implementar:
+
+* extracción de terceros desde la base de datos
+* construcción de dimensión de terceros
+* anonimización de información sensible
+* generación de identificadores trazables
+
+Ejemplo:
+
+* TERCERO_000001
+* TERCERO_000002
+* TERCERO_000003
+
+También se incorporará:
+
+* tabla de mapeo controlada
+* integración con la Silver Layer
+* trazabilidad entre identificador anonimizado y tercero original
+
+Objetivo:
+
+Preparar el proyecto para análisis financieros por terceros manteniendo principios de trazabilidad, gobierno de datos y protección de información sensible.
+
+---
+
+### Caso de Uso
+
+Simulación de un pipeline financiero orientado a Business Intelligence, calidad del dato y analítica financiera sobre datasets reales.
+
+El proyecto busca representar escenarios comunes de integración ETL financiera, control de calidad, validaciones contables, gobierno de datos y preparación analítica para reportería financiera, análisis de negocio y futuras soluciones de Business Intelligence.

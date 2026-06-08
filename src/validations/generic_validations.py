@@ -41,10 +41,6 @@ def validate_dates(
     df: pd.DataFrame,
     date_column: str = "fecha"
 ) -> bool:
-    """
-    Valida que la columna de fechas exista,
-    no tenga nulos y pueda convertirse a datetime.
-    """
 
     if date_column not in df.columns:
 
@@ -62,7 +58,8 @@ def validate_dates(
 
         pd.to_datetime(
             df[date_column],
-            errors="raise"
+            format="%d/%m/%Y",
+            errors="raise",
         )
 
     except Exception as e:

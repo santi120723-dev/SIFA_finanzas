@@ -47,7 +47,7 @@ def clean_strings(df: pd.DataFrame) -> pd.DataFrame:
 
     logger.info("Limpiando columnas de tipo string...")
 
-    str_cols = df.select_dtypes(include=["object"]).columns
+    str_cols = df.select_dtypes(include=["object", "string"]).columns
 
     for col in str_cols:
         df[col] = df[col].apply(
