@@ -4,23 +4,61 @@ log = logging.getLogger(__name__)
 
 
 def validate_nulls(df):
-    """Devuelve [] si no hay nulos, o una lista de mensajes 
-    si superan el umbral."""
+    """
+    Detecta nulos relevantes para calidad de datos.
 
-    if df.isnull().any().any():
-        null_pct = df.isnull().sum().sum() / df.size
+    Algunas columnas pueden contener nulos
+    válidos por diseño y se excluyen
+    del cálculo.
+    """
+
+    ALLOWED_NULL_COLUMNS = [
+        "contacto",
+        "documento",
+        "tipo_tercero",
+        "estado_matching",
+        "cdigo",
+    ]
+
+    columnas_a_validar = [
+        col
+        for col in df.columns
+        if col not in ALLOWED_NULL_COLUMNS
+    ]
+
+    df_validacion = df[
+        columnas_a_validar
+    ]
+
+    if df_validacion.isnull().any().any():
+
+        null_pct = (
+            df_validacion.isnull()
+            .sum()
+            .sum()
+            / df_validacion.size
+        )
+
         if null_pct > 0.05:
-            cols = df.columns[df.isnull().any()].tolist()
+
+            cols = (
+                df_validacion.columns[
+                    df_validacion.isnull().any()
+                ]
+                .tolist()
+            )
 
             log.warning(
-                f"Nulls in columns {cols}: {null_pct:.2%}"
+                f"Nulls en columnas {cols}: "
+                f"{null_pct:.2%}"
             )
 
             return [
                 {
                     "severity": "WARNING",
                     "message": (
-                        f"Nulls en {len(cols)} columnas (>5%)"
+                        f"Nulls en "
+                        f"{len(cols)} columnas (>5%)"
                     )
                 }
             ]

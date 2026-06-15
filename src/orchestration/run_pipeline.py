@@ -6,6 +6,7 @@ from src.ingestion.extract import (
 
 from src.utils.cleaning import clean_dataframe
 from src.utils.export_silver import export_silver
+
 from src.validations.validation_runner import (
     run_validations,
 )
@@ -14,143 +15,223 @@ from src.validations.validation_summary import (
     validation_summary,
 )
 
+from src.dimensions.terceros import (
+    build_master_terceros
+)
+
+from src.dimensions.enrichment import (
+    enrich_third_parties,
+    calculate_matching_metrics
+)
+
+from src.privacy.anonymization import (
+    generate_third_party_mapping,
+    anonymize_third_parties,
+    export_mapping
+)
+
+from src.privacy.export_anonymized import (
+    export_anonymized_dataset
+)
+
+from src.dimensions.dim_terceros import (
+    build_dim_terceros
+)
+
+from src.dimensions.export_dimensions import (
+    export_dimension
+)
+
+from src.config import (
+    TERCEROS_MASTER,
+    THIRD_PARTY_MAPPING,
+    ANONYMIZED_ACCOUNTING,
+    DIM_TERCEROS,
+)
 
 def run_pipeline(
     file_path: Path,
     file_type: str = None,
 ):
 
+    # ==========================
+    # LOAD
+    # ==========================
+
     raw_df = load_libro_mayor()
+
+    # ==========================
+    # CLEANING + TRANSFORMATIONS
+    # ==========================
 
     cleaned_df = clean_dataframe(
         raw_df,
         file_type=file_type,
     )
 
-    print("\n========== COLUMNAS SILVER ==========")
+    # ==========================
+    # ENRIQUECIMIENTO TERCEROS
+    # ==========================
+
+    master_terceros = build_master_terceros(
+        TERCEROS_MASTER
+    )
+
+    cleaned_df = enrich_third_parties(
+        cleaned_df,
+        master_terceros,
+        third_party_column="contacto"
+    )
+
+    # ==========================
+    # ANONIMIZACION
+    # ==========================
+
+    mapping_df = generate_third_party_mapping(
+        cleaned_df
+    )
+
+    export_mapping(
+        mapping_df,
+        THIRD_PARTY_MAPPING
+    )
+
+    anon_df = anonymize_third_parties(
+        cleaned_df,
+        mapping_df
+    )
+
+    export_anonymized_dataset(
+        anon_df,
+        ANONYMIZED_ACCOUNTING
+    )
+
+    print(
+        "\n========== DATASET ANONIMIZADO =========="
+    )
+
+    print(
+        anon_df.head(20)
+    )
+
+    # ==========================
+    # DIMENSION TERCEROS
+    # ==========================
+
+    print(anon_df.columns.tolist())
+
+    dim_terceros = build_dim_terceros(
+        anon_df
+    )
+
+    export_dimension(
+        dim_terceros,
+        DIM_TERCEROS
+    )
+
+    print(
+        "\n========== DIMENSION TERCEROS =========="
+    )
+
+    print(
+        dim_terceros.head(20)
+    )
+
+    print(
+        "\n========== TOTAL TERCEROS =========="
+    )
+
+    print(
+        len(dim_terceros)
+    )
+
+    print(
+        "\n========== DIMENSION EXPORTADA =========="
+    )
+
+    print(
+        DIM_TERCEROS
+    )
+
+    matching_metrics = calculate_matching_metrics(
+        cleaned_df[
+            [
+                "contacto",
+                "estado_matching"
+            ]
+        ]
+        .drop_duplicates()
+    )
+
+    print(
+        "\n========== MATCHING TERCEROS =========="
+    )
+
+    print(
+        f"""
+Cobertura Matching: {matching_metrics['cobertura']}%
+
+Total terceros: {matching_metrics['total_terceros']}
+Encontrados: {matching_metrics['encontrados']}
+Ambiguos: {matching_metrics['ambiguos']}
+No encontrados: {matching_metrics['no_encontrados']}
+"""
+    )
+
+    print(
+        "\n========== ENRIQUECIMIENTO =========="
+    )
+
+    print(
+        cleaned_df[
+            [
+                "contacto",
+                "documento",
+                "tipo_tercero",
+                "estado_matching"
+            ]
+        ]
+        .dropna(subset=["contacto"])
+        .head(20)
+        .to_string()
+    )
+
+    print(
+        "\n========== COLUMNAS SILVER =========="
+    )
 
     print(
         cleaned_df.columns.tolist()
     )
 
-    print("\n========== TIPOS DE DATOS ==========")
+    print(
+        "\n========== TIPOS DE DATOS =========="
+    )
 
     print(
         cleaned_df.dtypes
     )
 
-    print("\n========== SILVER ACCOUNTING ==========")
-
     print(
-        cleaned_df[
-            [
-                "codigo_cuenta",
-                "nombre_cuenta",
-                "clase",
-                "grupo",
-                "cuenta_puc",
-                "subcuenta",
-                "anio",
-                "mes",
-                "trimestre",
-                "periodo_contable",
-                "detalle_movimiento",
-                "fecha",
-            ]
-        ].head(40)
+        "\n========== COLUMNAS TERCEROS =========="
     )
 
-    print("\n========== JERARQUIA PUC ==========")
-
     print(
         cleaned_df[
             [
-                "codigo_cuenta",
-                "clase",
-                "grupo",
-                "cuenta_puc",
-                "subcuenta",
+                "contacto",
+                "documento",
+                "tipo_tercero",
+                "estado_matching"
             ]
         ]
-        .drop_duplicates()
         .head(20)
+        .to_string()
     )
 
-    print("\n========== PERIODOS CONTABLES ==========")
-
-    print(
-        cleaned_df[
-            [
-                "anio",
-                "mes",
-                "trimestre",
-                "periodo_contable",
-            ]
-        ]
-        .drop_duplicates()
-        .sort_values(
-            by=[
-                "anio",
-                "mes",
-            ]
-        )
-        .head(20)
-    )
-
-    print("\n========== MOVIMIENTOS SIN CODIGO_CUENTA ==========")
-
-    print(
-        cleaned_df[
-            cleaned_df[
-                "codigo_cuenta"
-            ].isna()
-        ][
-            [
-                "codigo_cuenta",
-                "nombre_cuenta",
-                "detalle_movimiento",
-                "valor_movimiento",
-                "fecha",
-            ]
-        ].head(20)
-    )
-
-    print("\n========== TOTAL SIN CODIGO_CUENTA ==========")
-
-    print(
-        cleaned_df[
-            "codigo_cuenta"
-        ]
-        .isna()
-        .sum()
-    )
-
-    print("\n========== MOVIMIENTOS SIN NOMBRE_CUENTA ==========")
-
-    print(
-        cleaned_df[
-            cleaned_df[
-                "nombre_cuenta"
-            ].isna()
-        ][
-            [
-                "codigo_cuenta",
-                "nombre_cuenta",
-                "detalle_movimiento",
-                "fecha",
-            ]
-        ].head(20)
-    )
-
-    print("\n========== TOTAL SIN NOMBRE_CUENTA ==========")
-
-    print(
-        cleaned_df[
-            "nombre_cuenta"
-        ]
-        .isna()
-        .sum()
-    )
+    # ==========================
+    # VALIDACIONES
+    # ==========================
 
     validation_results = run_validations(
         cleaned_df
@@ -158,7 +239,11 @@ def run_pipeline(
 
     validation_summary(
         validation_results
-    )    
+    )
+
+    # ==========================
+    # EXPORTA SILVER
+    # ==========================
 
     silver_path = export_silver(
         df=cleaned_df,
@@ -170,6 +255,8 @@ def run_pipeline(
 
     return (
         cleaned_df,
+        anon_df,
         validation_results,
         silver_path,
+        matching_metrics,
     )

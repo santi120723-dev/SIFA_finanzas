@@ -12,3 +12,6 @@ data/clean/*
 
 logs/
 *.log
+
+# Datos internos
+data/internal/

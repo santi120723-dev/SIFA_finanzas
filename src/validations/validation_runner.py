@@ -36,6 +36,13 @@ from src.validations.account_hierarchy_validations import (
     validate_account_hierarchy_consistency,
 )
 
+from src.validations.third_party_validations import (
+    validate_matching_coverage,
+    validate_ambiguous_third_parties,
+    validate_unmatched_third_parties,
+    validate_missing_documents,
+    validate_orphan_third_parties,
+)
 log = logging.getLogger(__name__)
 
 
@@ -53,11 +60,18 @@ CRITICAL_VALIDATIONS = [
     validate_value_ranges,
 ]
 
-
 WARNING_VALIDATIONS = [
+
     validate_nulls,
     validate_empty_dataframe,
     validate_duplicates,
+
+    validate_matching_coverage,
+    validate_ambiguous_third_parties,
+    validate_unmatched_third_parties,
+
+    validate_missing_documents,
+    validate_orphan_third_parties,
 ]
 
 

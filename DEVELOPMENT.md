@@ -907,11 +907,11 @@ Resultado final:
 
 ---
 
-## Semana 7 — Gobierno de Datos y Preparación de la Gold Layer
+## Semana 7 — Gobierno de Datos y Gestión de Terceros
 
 ### Objetivo
 
-Enriquecer la información financiera validada de la Silver Layer incorporando la gestión de terceros, anonimización de datos sensibles y preparación de datasets orientados a análisis financiero, reportería y Business Intelligence.
+Fortalecer la Silver Layer financiera mediante la incorporación de terceros, la gestión de calidad de datos asociada y la anonimización de información sensible, preparando los datos para su uso seguro en entornos analíticos, portafolio y Business Intelligence.
 
 ---
 
@@ -939,19 +939,36 @@ Implementar una estructura centralizada para terceros financieros:
 
 Incluyendo:
 
+* tercero_id
 * documento
 * tipo_documento
 * nombre_tercero
-* identificador interno
+* tipo_tercero
+* estado_matching
 
 Esta dimensión permitirá:
 
 * consolidación por tercero
 * análisis de concentración
 * reportería por cliente o proveedor
-* futuras relaciones analíticas en Gold Layer
+* reutilización en modelos analíticos posteriores
 
 ✔ Se establece una entidad maestra para análisis financieros posteriores.
+
+---
+
+#### Sistema de matching y enriquecimiento de terceros
+
+Implementar procesos de enriquecimiento para asociar registros financieros con la base maestra de terceros.
+
+Incorporando:
+
+* matching exacto
+* control de ambigüedades
+* identificación de registros no encontrados
+* métricas de cobertura
+
+✔ Se mejora la calidad y trazabilidad de la información financiera.
 
 ---
 
@@ -982,7 +999,7 @@ manteniendo la consistencia entre registros relacionados.
 
 Construir una tabla de correspondencia controlada:
 
-##### terceros_mapping
+##### third_party_mapping
 
 Ejemplo:
 
@@ -1001,6 +1018,22 @@ Esta tabla:
 
 ---
 
+#### Exportación de datasets anonimizados
+
+Generar versiones seguras de los datasets financieros para:
+
+* portafolio
+* pruebas
+* GitHub
+* demostraciones
+* Business Intelligence
+
+Manteniendo la integridad analítica de la información.
+
+✔ Los datos quedan preparados para uso externo sin exponer información sensible.
+
+---
+
 #### Calidad de datos para terceros
 
 Incorporar validaciones orientadas a:
@@ -1010,8 +1043,69 @@ Incorporar validaciones orientadas a:
 * inconsistencias entre documento y nombre
 * registros huérfanos
 * problemas de identificación
+* cobertura de matching
 
 ✔ Se fortalece la calidad de la dimensión de terceros antes de procesos analíticos.
+
+---
+
+### Resultado esperado
+
+La plataforma evolucionará desde una Silver Layer validada hacia una arquitectura con capacidades de gobierno de datos mediante:
+
+* gestión estructurada de terceros
+* matching y enriquecimiento de información
+* anonimización de datos sensibles
+* trazabilidad controlada
+* dimensión maestra de terceros
+* datasets seguros para portafolio y análisis
+
+La información financiera quedará preparada para alimentar futuros modelos analíticos y estructuras Gold.
+
+---
+
+## Semana 8 — Construcción Inicial de Gold Layer Financiera
+
+### Objetivo
+
+Construir la primera Gold Layer financiera a partir de la Silver Layer validada, generando datasets analíticos reutilizables para reportería financiera, KPIs y Business Intelligence.
+
+---
+
+#### Diseño de Gold Layer
+
+Crear la estructura inicial:
+
+* data/gold/finance
+* data/gold/management
+* data/gold/operations
+
+Definiendo:
+
+* granularidad
+* métricas
+* dimensiones
+* reglas de agregación
+
+✔ Se establece la arquitectura analítica del proyecto.
+
+---
+
+#### Modelo analítico inicial
+
+Diseñar una estructura dimensional compuesta por:
+
+##### Dimensiones
+
+* dim_calendario
+* dim_cuentas
+* dim_terceros
+
+##### Hechos
+
+* fact_movimientos_financieros
+
+✔ Se establece una base preparada para análisis y BI.
 
 ---
 
@@ -1024,106 +1118,20 @@ Preparar datasets derivados desde Silver para facilitar:
 * indicadores financieros
 * futuras visualizaciones BI
 
-Se evaluará la construcción de datasets orientados a:
+Se construirán datasets orientados a:
 
 * movimientos por cuenta
 * movimientos por tercero
 * análisis temporal
 * consolidación financiera
 
-✔ La información comenzará a estructurarse para consumo analítico.
+✔ La información comienza a estructurarse para consumo analítico.
 
 ---
 
-#### Diseño inicial de Gold Layer
+#### Primer dataset Gold
 
-Definir la estructura inicial para:
-
-* data/gold/finance
-* data/gold/management
-* data/gold/operations
-
-Estableciendo:
-
-* dimensiones
-* métricas
-* granularidad
-* criterios de agregación
-
-✔ Se preparan las bases para la futura capa Gold.
-
----
-
-#### Testing automatizado
-
-Implementar pruebas para:
-
-* generación de terceros anonimizados
-* consistencia de identificadores
-* integridad de tablas de mapeo
-* calidad de la dimensión de terceros
-* generación de datasets analíticos
-
-✔ Los nuevos procesos quedarán respaldados mediante pruebas automatizadas.
-
----
-
-### Resultado esperado
-
-La plataforma evolucionará desde una Silver Layer validada hacia una arquitectura preparada para análisis financiero y Business Intelligence mediante:
-
-* gestión estructurada de terceros
-* anonimización de información sensible
-* trazabilidad controlada
-* datasets analíticos reutilizables
-* preparación formal de la Gold Layer
-
-La información financiera quedará lista para soportar futuros KPIs, reportería ejecutiva, SQL analítico y dashboards de Business Intelligence.
-
----
-
-## Semana 8 — Construcción Inicial de Gold Layer Financiera
-
-### Objetivo
-
-Construir los primeros datasets analíticos derivados de la Silver Layer financiera, preparando la información para reportería financiera, KPIs y Business Intelligence.
-
----
-
-### Prioridad Principal
-
-#### Diseño de Gold Layer
-
-Crear:
-
-* data/gold/
-* estructura de datasets analíticos
-* reglas de agregación
-* organización por dominios analíticos
-
----
-
-### Modelo analítico inicial
-
-Diseñar una primera estructura dimensional compuesta por:
-
-#### Dimensiones
-
-* dim_calendario
-* dim_cuentas
-* dim_terceros
-
-#### Hechos
-
-* fact_movimientos_financieros
-
-✔ Se establece una base preparada para análisis y BI.
-
----
-
-### Primer dataset Gold
-
-#### financial_summary
+##### financial_summary
 
 Construir agregaciones por:
 
@@ -1133,11 +1141,13 @@ Construir agregaciones por:
 * cuenta_puc
 * subcuenta
 
+✔ Se obtiene una primera vista financiera consolidada.
+
 ---
 
-### Dataset analítico por terceros
+#### Dataset analítico por terceros
 
-#### financial_summary_by_third_party
+##### financial_summary_by_third_party
 
 Construir agregaciones por:
 
@@ -1146,25 +1156,27 @@ Construir agregaciones por:
 * clase
 * grupo
 
-Incorporando la anonimización implementada en Semana 7.
+Utilizando los identificadores anonimizados generados en Semana 7.
 
 ✔ Se habilita el análisis financiero por terceros sin exponer información sensible.
 
 ---
 
-### Métricas iniciales
+#### Métricas financieras iniciales
 
 Generar:
 
 * total_debe
 * total_haber
-* total_movimientos
 * valor_neto
 * cantidad_movimientos
+* saldo_acumulado
+
+✔ Se establecen los primeros KPIs financieros reutilizables.
 
 ---
 
-### Exportación Gold
+#### Exportación Gold
 
 Implementar:
 
@@ -1173,21 +1185,39 @@ Implementar:
 * control de versiones
 * organización de datasets analíticos
 
+✔ Los datasets analíticos quedan disponibles para consumo.
+
 ---
 
-### Validaciones Gold
+#### Validaciones Gold
 
 Verificar:
 
 * consistencia Silver vs Gold
 * integridad de agregaciones
-* ausencia de pérdidas de registros
-* consistencia de dimensiones
-* correcta anonimización de terceros
+* ausencia de pérdida de registros
+* consistencia dimensional
+* integridad de métricas financieras
+
+✔ Se garantiza confiabilidad analítica.
 
 ---
 
-### Preparación para BI
+#### Testing automatizado
+
+Implementar pruebas para:
+
+* generación de datasets Gold
+* consistencia de agregaciones
+* integridad dimensional
+* validaciones financieras
+* exportaciones analíticas
+
+✔ La Gold Layer queda respaldada mediante pruebas automatizadas.
+
+---
+
+#### Preparación para Business Intelligence
 
 Generar datasets optimizados para:
 
@@ -1197,11 +1227,13 @@ Generar datasets optimizados para:
 * análisis temporal
 * análisis por terceros
 
+✔ La información queda preparada para visualización y explotación analítica.
+
 ---
 
 ### Resultado esperado
 
-Primer ecosistema Gold financiero compuesto por datasets analíticos reutilizables, dimensiones financieras y estructuras preparadas para Business Intelligence, reportería financiera y construcción de KPIs.
+Primer ecosistema Gold financiero compuesto por datasets analíticos reutilizables, dimensiones financieras, tablas de hechos y métricas preparadas para Business Intelligence, reportería financiera y construcción de KPIs.
 
 ---
 
