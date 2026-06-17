@@ -441,23 +441,63 @@ Dimensiones analíticas:
 
 * Implementadas
 
----
+------
 
-# Próximos Pasos
-
-## Semana 8 — Capa Gold y Analítica Financiera
-
-Implementar:
-
-* modelos analíticos financieros
-* tablas Gold
-* KPIs financieros
-* métricas de negocio
-* datasets para Power BI
-* reportería financiera
-* análisis de rentabilidad
-* análisis temporal
+## Semana 8 — Construcción de la Gold Layer
 
 Objetivo:
 
-Transformar la información validada y gobernada de la Silver Layer en modelos preparados para Business Intelligence y análisis financiero.
+Transformar la información validada, enriquecida y gobernada de la Silver Layer en estructuras analíticas preparadas para Business Intelligence, Financial Analytics y Power BI.
+
+Componentes planificados:
+
+### Fact_Movimientos
+
+Tabla central de hechos financieros que almacenará:
+
+* debe
+* haber
+* valor_movimiento
+
+relacionada con dimensiones analíticas.
+
+### Dim_Cuentas
+
+Dimensión contable basada en la jerarquía PUC:
+
+* codigo_cuenta
+* nombre_cuenta
+* clase
+* grupo
+* cuenta_puc
+* subcuenta
+
+### Dim_Tiempo
+
+Dimensión temporal para análisis financiero:
+
+* fecha
+* anio
+* mes
+* trimestre
+* semestre
+* periodo_contable
+
+### Dim_Terceros
+
+Reutilización de la dimensión construida durante la Semana 7.
+
+### KPIs Financieros
+
+Construcción inicial de indicadores para:
+
+* ingresos
+* gastos
+* resultado financiero
+* análisis por tercero
+* concentración de clientes
+* concentración de proveedores
+
+Resultado esperado:
+
+Implementar un modelo estrella financiero preparado para reportería, análisis y consumo en Power BI.
